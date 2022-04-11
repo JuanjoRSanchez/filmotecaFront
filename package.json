@@ -1,0 +1,19 @@
+{
+  "name": "vue01",
+  "version": "0.1.0",
+  "description": "Front End Filmoteca",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuanjoRSanchez/Vue01.git"
+  },
+  "author": "Juanjo Rubio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JuanjoRSanchez/Vue01/issues"
+  },
+  "homepage": "https://github.com/JuanjoRSanchez/Vue01#readme"
+}
