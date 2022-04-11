@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/JuanjoRSanchez/Vue01/issues"
   },
-  "homepage": "https://github.com/JuanjoRSanchez/Vue01#readme"
+  "homepage": "https://github.com/JuanjoRSanchez/Vue01#readme",
+  "dependencies": {
+    "vue": "^3.2.31"
+  }
 }
