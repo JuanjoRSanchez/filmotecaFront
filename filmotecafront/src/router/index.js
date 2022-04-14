@@ -29,18 +29,17 @@ const routes = [
   {
     path: '/newcount',
     name: 'new-count',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/NewCount.vue')
+    component: () => import( '../views/NewCount.vue')
   },
   {
     path: '/inicio',
     name: 'inicioPage',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Inicio.vue')
+    component: () => import( '../views/Inicio.vue')
+  },
+  {
+    path: '/AddPelicula',
+    name: 'addPelicula',
+    component: () => import( '../views/AddPelicula.vue')
   }
 ]
 

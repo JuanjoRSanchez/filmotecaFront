@@ -56,9 +56,8 @@
                         "
                       >
                         <p class="mb-0 me-2">¿No estás registrado?</p>
-                        <button type="button" class="btn btn-outline-danger">
-                          Crear una cuenta
-                        </button>
+                        <!-- <button type="button" class="btn btn-outline-danger">Crear una cuenta</button> -->
+                          <router-link to="/NewCount" type="button" class="btn btn-outline-danger">Crear una cuenta</router-link>                                               
                       </div>
                     </form>
                   </div>
@@ -109,20 +108,21 @@ export default {
       console.log(usuario);
       axios
         .get(
-          "http://localhost:9012/filmania/v1/usuario/log?" +
+          "http://localhost:9012/filmania/v1/usuario/login?" +
             "email=" +
             this.usuario +
             "&" +
             "password=" +
-            this.password
-         
+            this.password       
         )
         .then((response) => {
-          if (response.data == true) {
+          if (response.data != null) {
             console.log(response.data);
-            //router.push("homepage");
-            router.push("inicio");
+            console.log("Usuario correcto");
             
+            localStorage.mail = this.usuario;
+            localStorage.name = response.data.name;
+            router.push("inicio");          
           } else {
             console.log("Usuario incorrecto");
             this.error = true;
@@ -133,18 +133,11 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-
-      // try { axios.get("http://localhost:9012/filmania/v1/usuario/log", usuario ).then( response => { console.log(response)}) } catch (error) { console.log(error) }
-      // Funciona!!!1 Petición de todos los usuarios
-      // try { axios.get("http://localhost:9012/filmania/v1/usuario/" ).then( response => { console.log(response)}) } catch (error) { console.log(error) }
-      // try { axios.post("http://localhost:9012/filmania/v1/usuario", json  ) } catch (error) { console.log(error) }
     },
   },
 };
 
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 #login {
   font-family: Avenir, Helvetica, Arial, sans-serif;

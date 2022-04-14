@@ -11,8 +11,20 @@
                     <div class="text-center">
                       <h4 class="mt-1 mb-5 pb-1">Bienvenido a Filmoteca</h4>
                     </div>
-                    <form v-on:submit.prevent="login">
+                    <form v-on:submit.prevent="registrar">
                       <p>Crear una nueva cuenta</p>
+                      <div class="form-outline mb-4">
+                        <label class="form-label" for="form2Example11"
+                          >Email</label
+                        >
+                        <input
+                          type="text"
+                          id="form2Example11"
+                          class="form-control"
+                          placeholder="nombre"
+                          v-model="email"
+                        />
+                      </div>
                       <div class="form-outline mb-4">
                         <label class="form-label" for="form2Example11"
                           >Nombre</label
@@ -42,20 +54,7 @@
                           class="btn btn-primary btn-block fa-lg mb-3"
                           type="submit"
                         >
-                          Accede
-                        </button>
-                      </div>
-                      <div
-                        class="
-                          d-flex
-                          align-items-center
-                          justify-content-center
-                          pb-4
-                        "
-                      >
-                        <p class="mb-0 me-2">¿No estás registrado?</p>
-                        <button type="button" class="btn btn-outline-danger">
-                          Crear una cuenta
+                          Crear cuenta
                         </button>
                       </div>
                     </form>
@@ -81,8 +80,9 @@
 </template>
 
 <script >
-
-import 'bootstrap/dist/css/bootstrap.css'
+import axios from "axios";
+import router from "../router/index.js";
+import "bootstrap/dist/css/bootstrap.css";
 
 export default {
   name: "new-count",
@@ -90,19 +90,38 @@ export default {
     return {
       usuario: "",
       password: "",
+      email: "",
       error: false,
       error_msg: "",
     };
   },
   methods: {
-    login() {
+    registrar() {
       console.log(this.usuario);
-
-
+      let usuario = {
+        email: this.usuario,
+        name: this.usuario,
+        password: this.password,
+      };
+      axios
+        .post("http://localhost:9012/filmania/v1/usuario/", usuario)
+        .then((response) => {
+          if (response.data == null) {
+            console.log("Usuario incorrecto");
+            this.error = true;
+            this.error_msg = response.data.result.error_msg;
+          } else {
+            console.log(response.data);
+            router.push("inicio");
+          }
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
