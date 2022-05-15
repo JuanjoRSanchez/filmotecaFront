@@ -4,10 +4,14 @@ import router from './router'
 import store from './store'
 
 
-Vue.config.productionTip = false
+// Opciones de Vue
+const options = {
+  router: router,
+  store: store,
+  render: function(createElement) {
+    return createElement(App);
+  }
+};
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+const app = new Vue(options);
+app.$mount("#app");

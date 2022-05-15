@@ -40,13 +40,29 @@ const routes = [
     path: '/AddPelicula',
     name: 'addPelicula',
     component: () => import( '../views/AddPelicula.vue')
+  },
+  {
+    path: '/UpdatePelicula',
+    name: 'updatePelicula',
+    component: () => import( '../views/UpdatePelicula.vue')
   }
 ]
+
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+if ((to.path !== 'login') && localStorage.getItem('mail') === "") {
+    next({ path: 'home' })
+  }else{
+    next()
+  }
+ 
+})
+
 
 export default router

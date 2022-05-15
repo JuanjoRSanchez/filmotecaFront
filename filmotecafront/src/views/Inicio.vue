@@ -2,116 +2,195 @@
   <div>
     <div id="acciones">
       <div>
-        <table id="peliculaAcciones">
-          <tr>
-            <td> <router-link to="/AddPelicula" type="button">Añadir nueva película</router-link></td>
-            <div id="usuario">Hola! {{ name }}</div>
-          </tr>
-        </table>
+
+              <router-link to="/AddPelicula" type="button"
+                >Añadir nueva película</router-link
+              >
+        
+            <div id="usuario">Hola! {{ email }}</div>
+        
+    
       </div>
+      <!--
       <table id="filtros">
         <tr>
           <td>Filtrar por:</td>
-          <td>Director</td>
+          <td  ><a href="#" @click="ordenDirector(pelis)">Director</a></td>
           <td>Año</td>
           <td>Título</td>
         </tr>
       </table>
+      -->
     </div>
-    <!-- 
-    <ul id="pelis">
-      <li v-for="peli in pelis" :key="peli">{{ peli }}</li>
-    </ul>
-    -->
-    <table id="pelis">
-      <tr id="titulos">
-        <td>Id</td>
-        <td>Título</td>
-        <td>Año de estreno</td>
-        <td>Director</td>
-        <td>Comentario</td>
-        <td>Nota</td>
-        <td class="btnMan">Eliminar</td>
-        <td class="btnMan">Modificar</td>
-      </tr>
-      <tr id="peliculadetalles" v-for="peli in pelis" :key="peli" >
-        <td>{{ peli.id_pelicula }}</td>
-        <td>{{ peli.title }}</td>
-        <td>{{ peli.anio }}</td>
-        <td>{{ peli.director.name + peli.director.lastname }}</td>
-        <td>{{ "Pendiente de lógica" }}</td>
-        <td>{{ "Pendiente" }}</td>
-        <td class="btnMan"><button  v-on:click="deletePelicula(peli.title)">X</button> </td>
-        <td class="btnMan">M</td>
-      </tr>
-    </table>
+    <div v-if="pelis">
+      <table id="pelis">
+        <tr id="titulos">
+          <td class="tdMin">Id</td>
+          <td class="tdTitulo">Título</td>
+          <td class="tdMed">Año de estreno</td>
+          <td class="tdDirector">Director</td>
+          <td id="tdComentario">Comentario</td>
+          <td class="tdMin">Nota</td>
+          <td class="tdMin">Vista</td>
+          <td class="btnMan tdMin" >Eliminar</td>
+          <td class="btnMan tdMin">Modificar</td>
+        </tr>
+        <tr id="peliculadetalles" v-for="peli in pelis" :key="peli.id">
+          <td>{{ peli.id }}</td>
+          <td>{{ peli.title }}</td>
+          <td>{{ peli.anio }}</td>
+          <td>{{ peli.nombreDirector }}</td>
+          <td>{{ peli.comentario }}</td>
+          <td>{{ peli.nota }}</td>
+          <td>{{ peli.vista }}</td>
+          <td class="btnMan" @click="deletePelicula(peli.id)">X</td>
+          <td class="btnMan" @click="setIdPelicula(peli.id)">
+            <router-link             
+              to="/UpdatePelicula"
+              type="button"
+              class="btn btn-outline-primary"
+              >M</router-link
+            >
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
 </template>
 <script>
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
-
+import {ordenarDirector} from "../../Utiles/Filtros.js";
 
 export default {
   name: "inicioPage",
   data: function () {
     return {
-      name: localStorage.name,
+      nombre: "",
       email: "",
       password: "",
-      pelis: [],
+      pelis: {},
+      director: {},
       error: false,
       error_msg: "",
     };
   },
   mounted() {
-    if (localStorage.mail) {
+    if (localStorage) {
+      console.log("ddddddddddddddd");
       this.email = localStorage.mail;
-      this.getPeliculas();
+      this.nombre = localStorage.name,
+        // this.getPeliculas();
+        console.log(localStorage);
+      this.response = null;
     }
   },
+  created() {
+    this.getPeliculasDTO();
+  },
+  watch(){
+  
+  },
   methods: {
-    getPeliculas() {
-      console.log(this.usuario);
-
-      let usuario = {
-        email: this.usuario,
-        password: this.password,
-      };
-      console.log(usuario);
-      axios
-        .get(
-          "http://localhost:9012/filmania/v1/pelicula/usuarioMail/" + this.email
-        )
-        .then((response) => {
-          if (response.data != null) {
-            console.log(response.data);
-
-            localStorage.mail = this.email;
-            this.pelis = response.data;
-          } else {
-            console.log("Sin respuesta");
-            this.error = true;
-          }
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+   ordenDirector:function(){
+     this.pelis = ordenarDirector(this.pelis);
+     
+   },
+    setIdPelicula(peliId) {
+      localStorage.idPelicula = peliId;
     },
-    deletePelicula(title){
-      console.log("Entro a hacer la petición");
-      axios
-        .delete("http://localhost:9012/filmania/v1/pelicula/title/" + title)
-          .then(
-            window.location.reload()
+    /*
+    getPeliculas() {
+      
+      try {
+        axios
+          .get(
+            "http://localhost:9012/filmania/v1/pelicula/lista/" +
+              localStorage.mail
           )
-    }
+          .then((response) => {
+            if (response.data != null) {
+              console.log(response);
+             this.pelis = response.data;
+             console.log(this.pelis);
+            } else {
+              console.log("Sin respuesta");
+              this.error = true;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    */
+    getPeliculasDTO() {   
+      try {
+        axios
+          .get(
+            "http://localhost:9012/filmania/v1/pelicula/listas/" +
+              localStorage.mail
+          )
+          .then((response) => {
+            if (response.data != null) {
+              console.log(response);
+              this.pelis = response.data;
+              console.log(this.pelis);
+            } else {
+              console.log("Sin respuesta");
+              this.error = true;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    deletePelicula(peliID) {
+      if (window.confirm("Está apunto de borrar la película ¿Está seguro?")) {
+        try {
+          axios
+            .delete(
+              "http://localhost:9012/filmania/v1/pelicula/borrar/" + peliID
+            )
+            .then((response) => {
+              if (response.data == "ok") {
+                console.log("Elemento borrado");
+                location.reload();
+              } else {
+                console.log("No se ha podido borrar la película");
+              }
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
   },
 };
 </script>
 
 <style>
+.tdMin{
+ width: 50px;
+}
+.tdMed{
+ max-width: 100px;
+}
+#tdComentario{
+ width: 30%;
+  word-wrap: break-word;
+}
+span {
+  display: none;
+}
+tr :hover span {
+  display: block;
+}
 #usuario {
   position: relative;
   width: 150px;
@@ -120,11 +199,6 @@ export default {
   padding-bottom: 5px;
   padding-top: 5px;
   border: none;
-}
-#peliculaAcciones {
-  margin-left: 40%;
-  margin-bottom: 50px;
-  margin-top: 50px;
 }
 #filtros {
   margin-left: auto;
@@ -137,19 +211,17 @@ export default {
 }
 
 #pelis {
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 50px;
   margin-top: 50px;
 }
 #peliculadetalles td {
-  padding-bottom: 10px;
-  padding-top: 10px;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
 td {
-  width: 250px;
   border: 1px solid rgb(0, 132, 255);
 }
 .btnMan {

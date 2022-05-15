@@ -1,18 +1,17 @@
 <template>
   <div id="login">
     <section class="h-100 gradient-form" style="background-color: #eee">
-      <div class="container py-5 h-100">
+      <div class="container py-5 h-50">
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-xl-10">
             <div class="card rounded-3 text-black">
               <div class="row g-0">
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                   <div class="card-body p-md-5 mx-md-4">
                     <div class="text-center">
-                      <h4 class="mt-1 mb-5 pb-1">Bienvenido a Filmoteca</h4>
                     </div>
                     <form v-on:submit.prevent="registrar">
-                      <p>Crear una nueva cuenta</p>
+                      <h3>Crear una nueva cuenta</h3>
                       <div class="form-outline mb-4">
                         <label class="form-label" for="form2Example11"
                           >Email</label
@@ -26,24 +25,24 @@
                         />
                       </div>
                       <div class="form-outline mb-4">
-                        <label class="form-label" for="form2Example11"
+                        <label class="form-label" for="form2Example12"
                           >Nombre</label
                         >
                         <input
                           type="text"
-                          id="form2Example11"
+                          id="form2Example12"
                           class="form-control"
                           placeholder="nombre"
                           v-model="usuario"
                         />
                       </div>
                       <div class="form-outline mb-4">
-                        <label class="form-label" for="form2Example22"
+                        <label class="form-label" for="form2Example13"
                           >Contraseña</label
                         >
                         <input
                           type="password"
-                          id="form2Example22"
+                          id="form2Example13"
                           class="form-control"
                           placeholder="contraseña"
                           v-model="password"
@@ -59,6 +58,7 @@
                       </div>
                     </form>
                   </div>
+                  <!--
                   <div>
                     <img
                       id="logo"
@@ -66,6 +66,7 @@
                       alt="logo filmoteca"
                     />
                   </div>
+                  -->
                 </div>
               </div>
             </div>
@@ -85,6 +86,7 @@ import router from "../router/index.js";
 import "bootstrap/dist/css/bootstrap.css";
 
 export default {
+
   name: "new-count",
   data: function () {
     return {
@@ -102,9 +104,13 @@ export default {
         email: this.usuario,
         name: this.usuario,
         password: this.password,
+        roles: [{id: 1, nombre: this.name}]
+        
       };
+      localStorage.mail = usuario.email;
+      localStorage.name = usuario.name;
       axios
-        .post("http://localhost:9012/filmania/v1/usuario/", usuario)
+        .post("http://localhost:9012/filmania/v1/usuario", usuario)
         .then((response) => {
           if (response.data == null) {
             console.log("Usuario incorrecto");
@@ -124,7 +130,7 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scope>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -143,6 +149,8 @@ export default {
 }
 .form-control {
   text-align: center;
+  width: 400px;
+  margin: auto;
 }
 .gradient-custom-2 {
   /* fallback for old browsers */

@@ -18,7 +18,14 @@ export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  created(){
+    localStorage.clear();
+  },
+  mounted(){
+    localStorage.clear();
   }
+
 }
 </script>
 

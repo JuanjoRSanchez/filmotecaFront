@@ -6,55 +6,134 @@
           <div class="col-xl-10">
             <div class="card rounded-3 text-black">
               <div class="row g-0">
+                <router-link to="/inicio">Home</router-link>
+                <div id="usuario">Hola! {{ email }}</div>
                 <div class="col-lg-6">
                   <div class="card-body p-md-5 mx-md-4">
-                    <!-- 
-                        <div class="text-center">
-                            <h4 class="mt-1 mb-5 pb-1">Bienvenido a Filmoteca</h4>
-                        </div>
-                    -->
-                    <form v-on:submit.prevent="login">
-                      <p>Introduce tus datos</p>
+                    <form v-on:submit.prevent="addPelicula">
+                      <p>Introduce los datos de la película</p>
                       <div class="form-outline mb-4">
-                        <label class="form-label" for="form2Example11"
+                        <label class="form-label" for="form2Example10"
                           >Título</label
                         >
                         <input
                           type="text"
-                          id="form2Example11"
+                          id="form2Example10"
                           class="form-control text-center"
-                          v-model="usuario"
+                          v-model="titulo"
+                          v-on:KeyDown.enter="AJAXConsultaPelicula2"
                         />
-                      </div>
-                      <div class="form-outline mb-4">
-                        <label class="form-label" for="form2Example22"
-                          >Año</label
+                        <div
+                          id="sugerancias"
+                          v-if="resultadoAjaxPeliculaTitulo"
                         >
-                        <input
-                          type="password"
-                          id="form2Example22"
-                          class="form-control text-center"
-                          v-model="password"
-                        />
-                      </div>
-                      <div class="form-outline mb-4">
-                        <label class="form-label" for="form2Example22"
-                          >Director</label
-                        >
-                        <input
-                          type="password"
-                          id="form2Example22"
-                          class="form-control text-center"
-                          v-model="password"
-                        />
-                      </div>
-                      <div class="text-center pt-1 mb-5 pb-1">
-                        <button
-                          class="btn btn-primary btn-block fa-lg mb-3"
-                          type="submit"
-                        >
-                          Guardar
-                        </button>
+                          <ul
+                            v-for="titulo in resultadoAjaxPeliculaTitulo"
+                            :key="titulo.id_pelicula"
+                            id="sug"
+                          >
+                            <li>
+                              <a href="#" @click="rellenarPelicula(titulo)">{{
+                                titulo.title
+                              }}</a>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="form-outline mb-4">
+                          <label class="form-label" for="form2Example11"
+                            >Año</label
+                          >
+                          <input
+                            type="text"
+                            id="form2Example11"
+                            class="form-control text-center"
+                            v-model="anio"
+                          />
+                        </div>
+                        <div class="form-outline mb-4">
+                          <label class="form-label" for="form2Example12"
+                            >Director</label
+                          >
+                          <input
+                            type="text"
+                            id="form2Example12"
+                            class="form-control text-center"
+                            v-model="director"
+                          />
+                          <div id="sugerancias" v-if="resultadoAjaxNombre">
+                            <ul
+                              v-for="dir in resultadoAjaxNombre"
+                              :key="dir.id_director"
+                              id="sug"
+                            >
+                              <li>
+                                <a
+                                  href="#"
+                                  @click="rellenarDirector(dir.name)"
+                                  >{{ dir.name }}</a
+                                >
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="form-outline mb-4">
+                          <label class="form-label" for="form2Example13"
+                            >Comentario</label
+                          >
+                          <input
+                            type="text"
+                            id="form2Example13"
+                            class="form-control text-center"
+                            v-model="comentario"
+                          />
+                        </div>
+                        <div class="form-outline mb-4">
+                          <label class="form-label" for="form2Example14"
+                            >Nota</label
+                          >
+                          <input
+                            type="text"
+                            id="form2Example14"
+                            class="form-control text-center"
+                            v-model="nota"
+                          />
+                        </div>
+                        <p>¿Has visto la película?</p>
+                        <div class="form-outline mb-4">
+                          <div class="form-check">
+                            <label class="form-check-label" for="form2Example15"
+                              >Si</label
+                            >
+                            <input
+                              type="radio"
+                              id="form2Example15"
+                              v-model="vista"
+                              class="form-check-input"
+                              value="true"
+                            />
+                          </div>
+                          <div class="form-check">
+                            <label class="form-check-label" for="form2Example16"
+                              >No</label
+                            >
+                            <input
+                              type="radio"
+                              id="form2Example16"
+                              v-model="vista"
+                              class="form-check-input"
+                              value="false"
+                            />
+                          </div>
+                        </div>
+                        <div class="text-center pt-1 mb-5 pb-1">
+                          <button
+                            to="/home"
+                            class="btn btn-primary btn-block fa-lg mb-3"
+                            type="submit"
+                          >
+                            Guardar
+                          </button>
+                        </div>
                       </div>
                     </form>
                   </div>
@@ -70,62 +149,202 @@
     </div>
   </div>
 </template>
-
 <script>
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
+import router from "../router/index.js";
+
 export default {
   name: "inicioPage",
   data: function () {
     return {
-      name: localStorage.name,
-      email: "",
+      resultadoAjaxPeliculaTitulo: "",
+      email: localStorage.mail,
       password: "",
       pelis: [],
+      nota: "",
+      comentario: "",
+      director: "",
+      titulo: "",
+      anio: "",
+      resultadoAjaxNombre: "",
+      resultadoAjaxApellido: "",
+      pelicula: [],
+      nombreDirector: "",
+      title: "",
+      vista: "",
+      emailusuario: "",
+      peliculaDTO: {},
       error: false,
       error_msg: "",
+      respuestaOK: "",
+      directores: false,
     };
+  },
+  props: {
+    peliculaDTOS: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  watch: {
+    director: function () {
+      this.AJAXConsultaDirector();
+    },
+    titulo: function () {
+      this.AJAXConsultaPelicula2();
+    },
   },
   mounted() {
     if (localStorage.mail) {
-      this.email = localStorage.mail;
-      this.getPeliculas();
+      console.log("guardo el mail en mail");
+      this.name = localStorage.name;
+      console.log(this.email);
     }
   },
   methods: {
     addPelicula() {
-      console.log(this.usuario);
-
-      let usuario = {
-        email: this.usuario,
-        password: this.password,
+      if (this.vista == "true") {
+        this.vista = true;
+      } else {
+        this.vista = false;
+      }
+      this.peliculaDTO = {
+        emailusuario: this.email,
+        nombreDirector: this.director,
+        title: this.titulo,
+        anio: this.anio,
+        comentario: this.comentario,
+        nota: this.nota,
+        vista: this.vista,
       };
-      console.log(usuario);
+      console.log("peliDTO" + this.peliculaDTO);
       axios
         .post(
-          "http://localhost:9012/filmania/v1/pelicula/usuarioMail/" + this.email
+          "http://localhost:9012/filmania/v1/pelicula/add",
+          this.peliculaDTO
         )
         .then((response) => {
-          if (response.data != null) {
-            console.log(response.data);
-
-            localStorage.mail = this.email;
-            this.pelis = response.data;
-          } else {
+          console.log(response.data);
+          if (response.data == null) {
             console.log("Sin respuesta");
             this.error = true;
+          } else {
+            this.respuestaOK = response.data;
           }
           console.log(response);
         })
         .catch((error) => {
           console.log(error);
+          console.log("No hay respuesta");
         });
+      if (window.confirm("La pélicula se guradó con existo")) {
+        router.push("inicio");
+      }
+    },
+    AJAXConsultaDirector() {
+      axios
+        .get("http://localhost:9012/filmania/v1/director/AJAX/" + this.director)
+        .then((response) => {
+          console.log(response.data);
+          if (response.data != null) {
+            this.resultadoAjaxNombre = response.data;
+            console.log(
+              "resultadoAjaxNombre: " + this.resultadoAjaxNombre.name
+            );
+          }
+        });
+    },
+    /*
+    AJAXConsultaPelicula() {
+      console.log("entro a ajax");
+      axios
+        .get("http://localhost:9012/filmania/v1/pelicula/peli/" + this.titulo)
+        .then((response) => {
+          console.log(response.data);
+          if (response.data != null) {
+            var result = response.data;
+
+            this.resultadoAjaxPeliculaTitulo = response.data;
+            for(var i = 0; i < result.length; i++){
+              console.log(result[i]);
+            }         
+          }
+        });
+    },
+    */
+    AJAXConsultaPelicula2() {
+      console.log("entro a ajax");
+      axios
+        .get("http://localhost:9012/filmania/v1/pelicula/titulo/" + this.titulo)
+        .then((response) => {
+          console.log(response.data);
+          if (response.data != null) {
+            this.resultadoAjaxPeliculaTitulo = response.data;
+          }
+        });
+    },
+    /*
+    AJAXConsultaPeliculaById() {
+      console.log("entro a ajax");
+      axios
+        .get("http://localhost:9012/filmania/v1/pelicula/peli/" + this.titulo)
+        .then((response) => {
+          console.log(response.data);
+          if (response.data != null) {
+            var result = response.data;
+
+           
+           
+            for(var i = 0; i < result.length; i++){
+              console.log(result[i]);
+            }         
+          }
+        });
+    },
+     consultaPeliculaUsuById() {
+      console.log("entro a ajax");
+      axios
+        .get("http://localhost:9012/filmania/v1/pelicula/" + 2)
+        .then((response) => {
+          
+          if (response.data != null) {
+            this.peliculaRelleno = response.data;
+            console.log(this.peliculaRelleno);
+            console.log(this.peliculaRelleno.title);
+
+            this.director = this.peliculaRelleno.nombreDirector ;
+            this.titulo = this.peliculaRelleno.title ;
+            this.anio = this.peliculaRelleno.anio ;
+
+          }
+        });
+    },
+    */
+    rellenarPelicula(pelicula) {
+      this.director = pelicula.nombreDirector;
+      this.titulo = pelicula.title;
+      this.anio = pelicula.anio;
+    },
+    rellenarDirector(nombre) {
+      console.log("estoy en rellenar");
+      document.getElementById("form2Example12").value = nombre;
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
+#sug > li {
+  list-style: none;
+}
+#sug > li > a {
+  text-decoration: none;
+}
+#sugerencias {
+  border: 2px solid black;
+  margin-left: 300px;
+}
 #usuario {
   position: relative;
   width: 150px;
