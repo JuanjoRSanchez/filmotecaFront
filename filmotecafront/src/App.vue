@@ -1,20 +1,21 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Inicio</router-link> |
-      <router-link to="/about">Información sobre Filmoteca</router-link>
-    </nav>
     <router-view/>
   </div>
 </template>
+<script>
 
-<style >
+</script>
+<style scoped >
 #app {
+  width: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background-color: rgb(0, 0, 0);
+  height: 700px;
 }
 
 nav {
@@ -24,9 +25,16 @@ nav {
 nav a {
   font-weight: bold;
   color: #2c3e50;
+   text-decoration: none;
 }
-
+nav a:hover {
+  font-weight: bold;
+  color: #a4dace;
+ 
+}
+/*
 nav a.router-link-exact-active {
   color: #42b983;
 }
+*/
 </style>

@@ -1,64 +1,75 @@
 <template>
   <div id="login">
-    <section class="h-100 gradient-form" style="background-color: #eee">
-      <div class="container py-5 h-50">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col-xl-10">
-            <div class="card rounded-3 text-black">
-              <div class="row g-0">
-                <div class="col-lg-12">
-                  <div class="card-body p-md-5 mx-md-4" id="caja">
-                    <form v-on:submit.prevent="login">
-                      <p>Introduce tus datos</p>
-                      <div class="form-outline mb-4">
-                        <label class="form-label" for="form2Example11"
-                          >Email</label
-                        >
-                        <input
-                          type="text"
-                          id="form2Example11"
-                          class="form-control"
-                          placeholder="email"
-                          v-model="email"
-                        />
-                      </div>
-                      <div class="form-outline mb-4">
-                        <label class="form-label" for="form2Example22"
-                          >Contraseña</label
-                        >
-                        <input
-                          type="password"
-                          id="form2Example22"
-                          class="form-control"
-                          placeholder="contraseña"
-                          v-model="password"
-                        />
-                      </div>
-                      <div class="text-center pt-1 mb-5 pb-1">
-                        <button
-                          class="btn btn-primary btn-block fa-lg mb-3"
-                          type="submit"
-                        >
-                          Accede
-                        </button>
-                      </div>
-                      <div
-                        class="
-                          d-flex
-                          align-items-center
-                          justify-content-center
-                          pb-4
-                        "
-                      >
-                        <p class="mb-6 me-6">¿No estás registrado?</p>
-                         <p><router-link to="/NewCount" type="button" class="btn btn-outline-danger" id="cuenta">Crear una cuenta</router-link></p>                             
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <movimiento />
+    <section class="h-100 gradient-form">
+      <div id="caja00">
+        <form v-on:submit.prevent="login">
+          <h2>Introduce tus datos</h2>
+          <hr style="color: white" />
+          <div class="form-outline mb-4">
+            <label class="form-label" for="form2Example11">Email</label>
+            <input
+              type="email"
+              id="form2Example11"
+              class="form-control"
+              placeholder="email"
+              v-model="email"
+            />
           </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="form2Example22">Contraseña</label>
+            <input
+              type="password"
+              id="form2Example22"
+              class="form-control"
+              placeholder="contraseña"
+              v-model="password"
+            />
+          </div>
+          <div class="text-center pt-1 mb-5 pb-1">
+            <button
+              class="btn btn-primary btn-block fa-lg mb-3 btnAcceder"
+              type="submit"
+            >
+              Accede
+            </button>
+          </div>
+          <div class="align-items-center justify-content-center pb-4">
+            <p>¿No estás registrado?</p>
+            <p>
+              <router-link
+                to="/NewCount"
+                type="button"
+                class="btn btn-primary"
+                id="cuenta"
+                >Crear una cuenta</router-link
+              >
+            </p>
+          </div>
+        </form>
+        <div id="mensaje">
+          <input
+            type="text"
+            style="
+              margin-top: 20px;
+              width: 450px;
+              text-align: center;
+              border: none;
+              color: red;
+            "
+            placeholder="Lo sentimos pero"
+          />
+          <input
+            v-model="mensaje"
+            type="text"
+            style="
+              margin-top: 30px;
+              width: 450px;
+              border: none;
+              text-align: center;
+              color: red;
+            "
+          />
         </div>
       </div>
     </section>
@@ -66,13 +77,16 @@
 </template>
 
 <script >
-
 import axios from "axios";
-import router from '../router/index.js';
-import 'bootstrap/dist/css/bootstrap.css'
+import router from "../router/index.js";
+import "bootstrap/dist/css/bootstrap.css";
+import movimiento from "../components/movimiento.vue";
 
 export default {
   name: "LoginIni",
+  components: {
+    movimiento,
+  },
   data: function () {
     return {
       usuario: "",
@@ -81,15 +95,15 @@ export default {
       error_msg: "",
       alerta: "No encontramos un usuario con estos datos",
       localStorage: "",
-      email: ""
+      email: "",
+      mensaje: "",
     };
   },
-  mounted(){
-   localStorage.clear();
+  mounted() {
+    document.getElementById("btnCuenta").style.display = "none";
   },
   methods: {
     login() {
-      localStorage.clear();
       axios
         .get(
           "http://localhost:9012/filmania/v1/usuario/login?" +
@@ -97,42 +111,58 @@ export default {
             this.email +
             "&" +
             "password=" +
-            this.password       
+            this.password
         )
         .then((response) => {
           if (response.data == 1) {
-            console.log(response.data);
-            console.log("Usuario correcto");
-            
-            console.log(response.data);
             localStorage.mail = this.email;
-            router.push("inicio");          
+            router.push("inicio");
           } else {
-            console.log(response.status);
-            console.log("Usuario incorrecto");
-            this.error = true;          
-            alert(this.alerta);
+            this.mensaje = this.alerta;
+            this.error = true;
+            document.getElementById("mensaje").style.display = "block";
+            setTimeout(this.ocultarMensaje, 3000);
           }
-          console.log(response);
         })
         .catch((error) => {
-          console.log(error);
+          this.mensaje = error;
         });
+    },
+    ocultarMensaje() {
+      document.getElementById("mensaje").style.display = "none";
     },
   },
 };
-
 </script>
-<style>
+<style scoped>
+h2 {
+  color: white;
+}
+input {
+  border-radius: 10px;
+}
+form {
+  padding: 50px;
+}
+#caja00 {
+  margin: auto;
+  width: 35%;
+  height: 400px;
+  background-color: rgb(60, 203, 228);
+  border-radius: 20px;
+}
 #login {
+  height: 100%;
+  width: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #3f3f3f;
+  background-color: rgb(255, 255, 255);
 }
-.container{
-    height: 300px;
+section {
+  padding-top: 50px;
 }
 #logo {
   position: relative;
@@ -140,44 +170,38 @@ export default {
   left: 500px;
   bottom: 350px;
 }
-#cuenta{
-  margin-top: 50px;
-}
 .form-control {
   text-align: center;
   width: 400px;
   margin: auto;
 }
-#alerta{
+#alerta {
   width: 600px;
   margin: auto;
 }
-.gradient-custom-2 {
-  /* fallback for old browsers */
-  background: #fccb90;
-
-  /* Chrome 10-25, Safari 5.1-6 */
-  background: -webkit-linear-gradient(
-    to right,
-    #ee7724,
-    #d8363a,
-    #dd3675,
-    #b44593
-  );
-
-  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+.btnAcceder {
+  border: 0.5px solid white;
 }
-
-@media (min-width: 768px) {
-  .gradient-form {
-    height: 100vh !important;
-  }
+p {
+  color: rgb(0, 0, 0);
 }
-@media (min-width: 769px) {
-  .gradient-custom-2 {
-    border-top-right-radius: 0.3rem;
-    border-bottom-right-radius: 0.3rem;
-  }
+.btnAcceder:hover {
+  border: 1px solid rgb(0, 145, 255);
+}
+#mensaje {
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  width: 35%;
+  height: 30%;
+  border: 1px solid red;
+  border-radius: 20px;
+  background-color: white;
+  display: none;
+}
+#mensaje button {
+  position: absolute;
+  right: 45%;
+  margin-top: 90px;
 }
 </style>

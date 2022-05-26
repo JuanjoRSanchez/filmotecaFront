@@ -1,19 +1,37 @@
 <template>
   <div class="home">
-    <a   >
-    <img  alt="Vue logo" src="../assets/logofilmoteca.png">
-    </a>
-    <HelloWorld  msg="Welcome to Your Vue.js App"/>
+    <img alt="Vue logo" src="../assets/LogoFilmoteca00.png" />
+    <cabeceraEntrada />
   </div>
 </template>
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import cabeceraEntrada from "../components/cabeceraEntrada.vue";
 
 export default {
-  name: 'HomeView',
+  name: "HomeView",
+  data: function () {
+    return {
+      email: localStorage.mail,
+    };
+  },
   components: {
-    HelloWorld
-  }
-}
+    cabeceraEntrada,
+  },
+  created() {
+    this.actualizarLocalStorage();
+  },
+  methods: {
+    actualizarLocalStorage() {
+      localStorage.clear();
+    },
+  },
+};
 </script>
+<style scoped>
+img {
+  margin-top: 50px;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>

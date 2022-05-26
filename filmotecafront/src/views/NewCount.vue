@@ -1,76 +1,60 @@
 <template>
-  <div id="login">
+  <div id="newCount">
+    <movimiento />
     <section class="h-100 gradient-form" style="background-color: #eee">
-      <div class="container py-5 h-50">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col-xl-10">
-            <div class="card rounded-3 text-black">
-              <div class="row g-0">
-                <div class="col-lg-12">
-                  <div class="card-body p-md-5 mx-md-4">
-                    <div class="text-center">
-                    </div>
-                    <form v-on:submit.prevent="registrar">
-                      <h3>Crear una nueva cuenta</h3>
-                      <div class="form-outline mb-4">
-                        <label class="form-label" for="form2Example11"
-                          >Email</label
-                        >
-                        <input
-                          type="text"
-                          id="form2Example11"
-                          class="form-control"
-                          placeholder="nombre"
-                          v-model="email"
-                        />
-                      </div>
-                      <div class="form-outline mb-4">
-                        <label class="form-label" for="form2Example12"
-                          >Nombre</label
-                        >
-                        <input
-                          type="text"
-                          id="form2Example12"
-                          class="form-control"
-                          placeholder="nombre"
-                          v-model="usuario"
-                        />
-                      </div>
-                      <div class="form-outline mb-4">
-                        <label class="form-label" for="form2Example13"
-                          >Contraseña</label
-                        >
-                        <input
-                          type="password"
-                          id="form2Example13"
-                          class="form-control"
-                          placeholder="contraseña"
-                          v-model="password"
-                        />
-                      </div>
-                      <div class="text-center pt-1 mb-5 pb-1">
-                        <button
-                          class="btn btn-primary btn-block fa-lg mb-3"
-                          type="submit"
-                        >
-                          Crear cuenta
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                  <!--
-                  <div>
-                    <img
-                      id="logo"
-                      src="../assets/logofilmoteca.png"
-                      alt="logo filmoteca"
-                    />
-                  </div>
-                  -->
-                </div>
-              </div>
-            </div>
+      <div id="caja00">
+        <form v-on:submit.prevent="registrar">
+          <h2>Crear una nueva cuenta</h2>
+          <hr style="color: white" />
+          <div class="form-outline mb-4">
+            <label class="form-label" for="form2Example11">Email</label>
+            <input
+              type="email"
+              id="form2Example11"
+              class="form-control"
+              placeholder="nombre"
+              v-model="email"
+            />
           </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="form2Example12">Nombre</label>
+            <input
+              type="text"
+              id="form2Example12"
+              class="form-control"
+              placeholder="nombre"
+              v-model="usuario"
+            />
+          </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="form2Example13">Contraseña</label>
+            <input
+              type="password"
+              id="form2Example13"
+              class="form-control"
+              placeholder="contraseña"
+              v-model="password"
+            />
+          </div>
+          <div class="text-center pt-1 mb-5 pb-1">
+            <button class="btn btn-primary btn-block fa-lg mb-3" type="submit">
+              Crear cuenta
+            </button>
+          </div>
+        </form>
+        <div id="mensaje">
+          <input
+            type="text"
+            style="
+              margin-top: 20px;
+              width: 450px;
+              text-align: center;
+              border: none;
+              color: red;
+            "
+            placeholder="Lo sentimos pero"
+          />
+          <input v-model="mensaje" type="text" />
         </div>
       </div>
     </section>
@@ -84,10 +68,13 @@
 import axios from "axios";
 import router from "../router/index.js";
 import "bootstrap/dist/css/bootstrap.css";
+import movimiento from "../components/movimiento.vue";
 
 export default {
-
   name: "new-count",
+  components: {
+    movimiento,
+  },
   data: function () {
     return {
       usuario: "",
@@ -95,6 +82,7 @@ export default {
       email: "",
       error: false,
       error_msg: "",
+      mensaje: "",
     };
   },
   methods: {
@@ -104,19 +92,23 @@ export default {
         email: this.usuario,
         name: this.usuario,
         password: this.password,
-        roles: [{id: 1, nombre: this.name}]
-        
+        roles: [{ id: 1, nombre: this.name }],
       };
       localStorage.mail = usuario.email;
       localStorage.name = usuario.name;
       axios
         .post("http://localhost:9012/filmania/v1/usuario", usuario)
         .then((response) => {
-          if (response.data == null) {
-            console.log("Usuario incorrecto");
+          if (response.data == 0) {
+            console.log("Ya existe un usuario con este email");
+            console.log(response.data);
             this.error = true;
             this.error_msg = response.data.result.error_msg;
+            document.getElementById("mensaje").style.display = "block";
+            setTimeout(this.ocultarMensaje, 3000);
           } else {
+            document.getElementById("mensaje").style.display = "block";
+            this.mensaje = this.response;
             console.log(response.data);
             router.push("inicio");
           }
@@ -126,12 +118,39 @@ export default {
           console.log(error);
         });
     },
+    ocultarMensaje() {
+      document.getElementById("mensaje").style.display = "none";
+    },
   },
 };
 </script>
-
-
 <style scope>
+h2 {
+  color: white;
+}
+form {
+  padding: 50px;
+}
+#newCount {
+  height: 100%;
+  width: 100%;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #3f3f3f;
+  background-color: rgb(255, 255, 255);
+}
+section {
+  padding-top: 50px;
+}
+#caja00 {
+  margin: auto;
+  width: 35%;
+  height: 500px;
+  background-color: rgb(60, 203, 228);
+  border-radius: 20px;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -140,7 +159,6 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-
 #logo {
   position: relative;
   width: 20%;
@@ -152,32 +170,20 @@ export default {
   width: 400px;
   margin: auto;
 }
-.gradient-custom-2 {
-  /* fallback for old browsers */
-  background: #fccb90;
-
-  /* Chrome 10-25, Safari 5.1-6 */
-  background: -webkit-linear-gradient(
-    to right,
-    #ee7724,
-    #d8363a,
-    #dd3675,
-    #b44593
-  );
-
-  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+#mensaje {
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  width: 35%;
+  height: 30%;
+  border: 1px solid red;
+  border-radius: 20px;
+  background-color: white;
+  display: none;
 }
-
-@media (min-width: 768px) {
-  .gradient-form {
-    height: 100vh !important;
-  }
-}
-@media (min-width: 769px) {
-  .gradient-custom-2 {
-    border-top-right-radius: 0.3rem;
-    border-bottom-right-radius: 0.3rem;
-  }
+#mensaje button {
+  position: absolute;
+  right: 45%;
+  margin-top: 90px;
 }
 </style>
