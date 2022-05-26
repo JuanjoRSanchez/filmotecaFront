@@ -87,9 +87,8 @@ export default {
   },
   methods: {
     registrar() {
-      console.log(this.usuario);
       let usuario = {
-        email: this.usuario,
+        email: this.email,
         name: this.usuario,
         password: this.password,
         roles: [{ id: 1, nombre: this.name }],
@@ -100,8 +99,6 @@ export default {
         .post("http://localhost:9012/filmania/v1/usuario", usuario)
         .then((response) => {
           if (response.data == 0) {
-            console.log("Ya existe un usuario con este email");
-            console.log(response.data);
             this.error = true;
             this.error_msg = response.data.result.error_msg;
             document.getElementById("mensaje").style.display = "block";
@@ -109,10 +106,8 @@ export default {
           } else {
             document.getElementById("mensaje").style.display = "block";
             this.mensaje = this.response;
-            console.log(response.data);
             router.push("inicio");
           }
-          console.log(response);
         })
         .catch((error) => {
           console.log(error);

@@ -5,7 +5,7 @@
       <volverApeliculas />
       <div class="col-lg-12" id="caja00">
         <form v-on:submit.prevent="updateUsuario">
-          <p>Estos son tus datos</p>
+          <h3>Estos son tus datos</h3>
           <div class="form-outline mb-4">
             <label class="form-label" for="form2Example20"
               >Tu Id de usuario és</label
@@ -13,7 +13,7 @@
             <input
               type="text"
               id="form2Example20"
-              class="form-control text-center"
+              class="form-control text-center readOnly"
               v-model="id"
               readonly
             />
@@ -50,7 +50,7 @@
             <input
               type="text"
               id="form2Example13"
-              class="form-control text-center inputE"
+              class="form-control text-center inputE readOnly"
               v-model="fechaAlta"
               readonly
             />
@@ -67,9 +67,8 @@
           <div class="text-center pt-1 mb-5 pb-1">
             <button
               class="btn btn-danger btn-block fa-lg mb-3"
-              type="submit"
               to="/home"
-              @click="eliminarUsuario"
+              @click="confirmar"
             >
               Eliminar cuenta
             </button>
@@ -79,6 +78,28 @@
     </section>
     <div id="mensaje">
       <input v-model="mensaje" id="inp" type="text" />
+    </div>
+    <div id="mensajeConfirmacion">
+      <input
+        v-model="mensajeConfirmacion"
+        id="inp"
+        type="text"
+        placeholder="¿Esta seguro de liminar su cuenta de Filmoteca?"
+      />
+      <div>
+        <button
+          class="btn btn-danger btn-block fa-lg mb-3"
+          @click="eliminarUsuario"
+        >
+          Si
+        </button>
+        <button
+          class="btn btn-primary btn-block fa-lg mb-3"
+          @click="noEliminar"
+        >
+          No
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -110,6 +131,7 @@ export default {
       nombre: "",
       fechaAlta: "",
       mensaje: "",
+      mensajeConfirmacion: "",
     };
   },
   mounted() {
@@ -133,8 +155,7 @@ export default {
               this.nombre = this.usuario.name;
               this.password = this.usuario.password;
               this.email = this.usuario.email;
-              this.fechaAlta = this.usuario.fechaAlta;
-            } else {
+              this.fechaAlta = this.usuario.fechaAlta.slice(0, -19);
               this.error = true;
             }
           })
@@ -195,8 +216,16 @@ export default {
         console.log(error);
       }
     },
+    
     ocultarMensaje() {
       document.getElementById("mensaje").style.display = "none";
+    },
+    
+    noEliminar() {
+      document.getElementById("mensajeConfirmacion").style.display = "none";
+    },
+    confirmar() {
+      document.getElementById("mensajeConfirmacion").style.display = "block";
     },
   },
 };
@@ -205,12 +234,19 @@ export default {
 #caja00 {
   text-align: center;
   width: 50%;
+  height: 35%;
   margin: auto;
+  padding-top: 20px;
+  background-color: rgb(60, 203, 228);
+  border-radius: 20px;
 }
 #caja00 input {
   margin-right: auto;
   margin-left: auto;
   width: 50%;
+}
+.readOnly {
+  background-color: bisque;
 }
 #slider {
   width: 30%;
@@ -265,6 +301,40 @@ section {
   margin-top: 90px;
 }
 #mensaje input {
+  margin-top: 30px;
+  width: 450px;
+  border: none;
+  text-align: center;
+  color: rgb(0, 157, 255);
+}
+#mensajeConfirmacion {
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  right: 35%;
+  width: 30%;
+  height: 22%;
+  border: 3px solid rgb(255, 0, 0);
+  border-radius: 20px;
+  background-color: white;
+  display: none;
+}
+#mensajeConfirmacion div {
+  display: flex;
+}
+#mensajeConfirmacion button:first-of-type {
+  position: absolute;
+  right: 25%;
+  margin-top: 40px;
+  margin-right: 10%;
+}
+#mensajeConfirmacion button {
+  position: absolute;
+  right: 45%;
+  margin-top: 40px;
+  margin-right: 10%;
+}
+#mensajeConfirmacion input {
   margin-top: 30px;
   width: 450px;
   border: none;

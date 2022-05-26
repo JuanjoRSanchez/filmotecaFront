@@ -16,7 +16,7 @@
               <input
                 type="text"
                 id="form2Example20"
-                class="form-control text-center"
+                class="form-control text-center readOnly"
                 v-model="titulo"
                 readonly
               />
@@ -35,7 +35,7 @@
               <input
                 type="text"
                 id="form2Example22"
-                class="form-control text-center"
+                class="form-control text-center readOnly"
                 v-model="director"
                 readonly
               />
@@ -274,5 +274,8 @@ section {
 }
 .cajaRadio input {
   margin-left: 27%;
+}
+.readOnly{
+  background-color: bisque;
 }
 </style>

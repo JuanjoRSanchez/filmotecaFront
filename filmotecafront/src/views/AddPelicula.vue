@@ -240,10 +240,12 @@ export default {
     },
     AJAXConsultaDirector() {
       axios
-        .get("http://localhost:9012/filmania/v1/director/AJAX/" + this.director)
+        .get("http://localhost:9012/filmania/v1/director/ajax/" + this.director)
         .then((response) => {
           if (response.data != null) {
             this.resultadoAjaxNombre = response.data;
+          }else{
+            document.getElementById("sugerencias01").style.display = "none";
           }
         });
     },
@@ -253,6 +255,8 @@ export default {
         .then((response) => {
           if (response.data != null) {
             this.resultadoAjaxPeliculaTitulo = response.data;
+          }else{
+            document.getElementById("sugerencias00").style.display = "none";
           }
         });
     },
@@ -281,7 +285,7 @@ export default {
   padding-bottom: 50px;
 }
 #caja00 {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(253, 253, 253);
   padding-top: 15px;
   margin-bottom: 50px;
 }
@@ -292,6 +296,7 @@ export default {
 .cajaRadio {
   margin: auto;
   width: 10%;
+  border-radius: 1px solid red;
 }
 .cajaRadio input {
   margin-left: 27%;
@@ -307,23 +312,24 @@ export default {
   height: 150px;
   max-height: 200px;
   overflow: scroll;
-  z-index: 100;
 }
 #sugerencias00 {
-  position: relative;
+  position: absolute;
   width: 30%;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 35%;
+  background-color: white;
   height: auto;
-  overflow: scroll;
+  padding-top: 15px;
+  z-index: 100;
 }
 #sugerencias01 {
-  position: relative;
+  position: absolute;
   width: 30%;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 35%;
+  background-color: white;
   height: auto;
-  overflow: scroll;
+  padding-top: 15px;
+  z-index: 100;
 }
 #sugerencias02 {
   position: absolute;

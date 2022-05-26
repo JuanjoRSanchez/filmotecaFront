@@ -5,7 +5,7 @@
     </router-link>
     <router-link to="/" id="btnSalir">Salir de la aplicación</router-link>
     <router-link to="/cuentaUsuario" id="btnCuenta">Tu cuenta</router-link>
-    <div v-if="email" id="usuario01">Hola! {{ email }}</div>
+    <div v-if="email" id="usuario01">Hola! {{ name }}</div>
   </div>
 </template>
 <script>
@@ -16,7 +16,16 @@ export default {
   data: function () {
     return {
       email: localStorage.mail,
+      name: localStorage.name
     };
+  },
+  mounted() {
+    if(!localStorage.mail){
+       document.getElementById("btnCuenta").style.display = "none";
+       document.getElementById("btnSalir").style.display = "none";
+    }
+   
+    
   },
 };
 </script>

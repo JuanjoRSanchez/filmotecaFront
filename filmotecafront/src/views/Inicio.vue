@@ -18,12 +18,11 @@
           <button id="btnOrdenar" @click="mostrarOrdenadores">Ordenar</button>
           <ul id="ordenar">
             <div>
-              <li><button @click="ordenarPorAnio">Año</button></li>
-              <li><button @click="ordenarPorNota">Nota</button></li>
+              <li><button @click="ordenarPorAnio">Año {{ sortAnio }}</button></li>
+              <li><button @click="ordenarPorNota">Nota {{ sortNota }}</button></li>
               <li><button @click="ordenarPorDirector">Director</button></li>
-              <li><button @click="ordenarPorVistas">Vistas</button></li>
-
-              <li><button @click="ordenarPorTitulo">Título</button></li>
+              <li><button @click="ordenarPorVistas">Vistas primero</button></li>
+              <li><button @click="ordenarPorTitulo">Quitar filtros</button></li>
             </div>
           </ul>
         </div>
@@ -61,7 +60,20 @@
               />
             </svg>
           </td>
-          <td v-else><span class="glyphicon glyphicon-ok"></span>No</td>
+          <td v-else>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-x"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+              />
+            </svg>
+          </td>
           <td class="btnMan">
             <a
               class="btn btn-outline-primary btnBorrar"
@@ -84,7 +96,8 @@
               to="/UpdatePelicula"
               type="button"
               class="btn btn-outline-primary"
-              ><svg
+            >
+              <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -97,8 +110,9 @@
                 />
                 <path
                   d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"
-                /></svg
-            ></router-link>
+                />
+              </svg>
+            </router-link>
           </td>
         </tr>
       </table>
@@ -149,7 +163,7 @@ export default {
       mensaje:
         "Lo sentimos en este momento no podemos acceder a tus películas, prueba más tarde",
       sortTitulo: "descendente",
-      pelisVistas: {},
+      sortVista: "descendente"
     };
   },
   mounted() {
@@ -208,16 +222,16 @@ export default {
       }
     },
     ordenarPorAnio() {
-      if (this.sortAnio == "descendente") {
+      if (this.sortAnio == "ascendente") {
         this.pelis.sort(function (a, b) {
           return a.anio - b.anio;
         });
-        this.sortAnio = "ascendente";
+        this.sortAnio = "descendente";
       } else {
         this.pelis.sort(function (a, b) {
           return b.anio - a.anio;
         });
-        this.sortAnio = "descendente";
+        this.sortAnio = "ascendente";
       }
     },
     ordenarPorNota() {
@@ -261,15 +275,16 @@ export default {
       location.reload();
     },
     ordenarPorVistas() {
-      console.log(this.pelis[0]);
-      var x = 0;
-      for (var i = 0; i < this.pelis.length; i++) {
-        if (this.pelis[i].vista == true) {
-          this.pelisVistas[x] = this.pelis[i];
-          x++;
-        }
-      }
-      this.pelis = this.pelisVistas;
+        this.pelis.sort((a, b) => {
+          if (
+            a.vista >
+            b.vista
+          ) {
+            return -1;
+          }
+        });
+       
+      return 0;
     },
     mostrarOrdenadores() {
       let disp = document.getElementById("ordenar").style.display;

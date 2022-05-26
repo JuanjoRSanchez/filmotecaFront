@@ -100,7 +100,6 @@ export default {
     };
   },
   mounted() {
-    document.getElementById("btnCuenta").style.display = "none";
   },
   methods: {
     login() {
