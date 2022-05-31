@@ -105,7 +105,7 @@ export default {
     login() {
       axios
         .get(
-          "http://localhost:9012/filmania/v1/usuario/login?" +
+          "http://localhost:9012/filmoteca/v1/usuario/login?" +
             "email=" +
             this.email +
             "&" +
@@ -113,14 +113,15 @@ export default {
             this.password
         )
         .then((response) => {
-          if (response.data == 1) {
+          if (response.data != "") {
             localStorage.mail = this.email;
+            localStorage.name = response.data;
             router.push("inicio");
           } else {
             this.mensaje = this.alerta;
             this.error = true;
             document.getElementById("mensaje").style.display = "block";
-            setTimeout(this.ocultarMensaje, 3000);
+            setTimeout(this.ocultarMensaje, 3000);            
           }
         })
         .catch((error) => {
@@ -131,6 +132,7 @@ export default {
       document.getElementById("mensaje").style.display = "none";
     },
   },
+
 };
 </script>
 <style scoped>

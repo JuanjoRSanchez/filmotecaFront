@@ -6,51 +6,40 @@
       <div class="col-lg-12" id="caja00">
         <form v-on:submit.prevent="updateUsuario">
           <h3>Estos son tus datos</h3>
-          <div class="form-outline mb-4">
-            <label class="form-label" for="form2Example20"
-              >Tu Id de usuario és</label
-            >
-            <input
-              type="text"
-              id="form2Example20"
-              class="form-control text-center readOnly"
-              v-model="id"
-              readonly
-            />
-          </div>
-          <div class="form-outline mb-4">
-            <label class="form-label" for="form2Example21">Nombre</label>
+          <div class="boxCampo">
+            <label class="label01" for="form2Example21">Nombre</label>
             <input
               type="text"
               id="form2Example21"
-              class="form-control text-center"
+              class="inputE"
               v-model="nombre"
             />
           </div>
-          <div class="form-outline mb-4">
-            <label class="form-label" for="form2Example22">Password</label>
+          <div class="boxCampo">
+            <label class="label01" for="form2Example22">Password</label>
             <input
               type="text"
               id="form2Example22"
-              class="form-control text-center"
+              class="inputE"
+              minlength="5"
               v-model="password"
             />
           </div>
-          <div class="form-outline mb-4">
-            <label class="form-label" for="form2Example23">Email</label>
+          <div class="boxCampo">
+            <label class="label01" for="form2Example23">Email</label>
             <input
-              type="text"
+              type="email"
               id="form2Example23"
-              class="form-control text-center"
+              class="inputE"
               v-model="email"
             />
           </div>
-          <div class="form-outline mb-4">
-            <label class="form-label" for="form2Example13">Fecha de alta</label>
+          <div class="boxCampo">
+            <label class="label01" for="form2Example13">Fecha de alta</label>
             <input
               type="text"
               id="form2Example13"
-              class="form-control text-center inputE readOnly"
+              class="inputE readOnly"
               v-model="fechaAlta"
               readonly
             />
@@ -120,9 +109,9 @@ export default {
   },
   data: function () {
     return {
-      email: localStorage.mail,
+      email: "",
       password: "",
-      usuario: [],
+      usuario: {},
       emailusuario: "",
       error: false,
       error_msg: "",
@@ -145,7 +134,7 @@ export default {
       try {
         axios
           .get(
-            "http://localhost:9012/filmania/v1/usuario/email/" +
+            "http://localhost:9012/filmoteca/v1/usuario/email/" +
               localStorage.mail
           )
           .then((response) => {
@@ -167,25 +156,35 @@ export default {
       }
     },
     updateUsuario() {
+      /*
       this.usuario.nombre = this.nombre;
       this.usuario.password = this.password;
       this.usuario.email = this.email;
       this.usuario.id_usuario = this.id;
+*/
+      this.usuario = {
+        name: this.nombre,
+        password: this.password,
+        email: this.email,
+        id_usuario: this.id
+      }
       axios
-        .put("http://localhost:9012/filmania/v1/usuario", this.usuario)
+        .put("http://localhost:9012/filmoteca/v1/usuario", this.usuario)
         .then((response) => {
           console.log(response.data);
-          if (response.data != null) {
+          if (response.data != "") {
             this.usuario = response.data;
-
+            console.log(this.usuario.name);
             this.nombre = this.usuario.name;
             this.password = this.usuario.password;
             this.email = this.usuario.email;
+
             this.mensaje = "El usuario se actualizó con exito";
             document.getElementById("mensaje").style.display = "block";
             setTimeout(this.ocultarMensaje, 3000);
           }
         });
+     // this.getUsuario();
     },
     eliminarUsuario() {
       document.getElementById("mensaje").style.border = "1px solid red";
@@ -194,7 +193,7 @@ export default {
       try {
         axios
           .delete(
-            "http://localhost:9012/filmania/v1/usuario/" +
+            "http://localhost:9012/filmoteca/v1/usuario/" +
               this.usuario.id_usuario
           )
           .then((response) => {
@@ -216,11 +215,11 @@ export default {
         console.log(error);
       }
     },
-    
+
     ocultarMensaje() {
       document.getElementById("mensaje").style.display = "none";
     },
-    
+
     noEliminar() {
       document.getElementById("mensajeConfirmacion").style.display = "none";
     },
@@ -231,19 +230,20 @@ export default {
 };
 </script>
 <style scoped>
+#cuentaUsuario {
+  background-color: rgb(255, 255, 255);
+  height: 100%;
+  padding-bottom: 1px;
+}
 #caja00 {
   text-align: center;
   width: 50%;
-  height: 35%;
+  min-width: 350px;
+  height: 45%;
   margin: auto;
   padding-top: 20px;
   background-color: rgb(60, 203, 228);
   border-radius: 20px;
-}
-#caja00 input {
-  margin-right: auto;
-  margin-left: auto;
-  width: 50%;
 }
 .readOnly {
   background-color: bisque;
@@ -340,5 +340,35 @@ section {
   border: none;
   text-align: center;
   color: rgb(0, 157, 255);
+}
+.boxCampo {
+  width: 100%;
+  margin-top: 15px;
+  margin-right: 10%;
+  margin-bottom: 15px;
+}
+.cajaForm {
+  width: 40%;
+  margin-right: auto;
+  margin-left: auto;
+}
+.label01 {
+  width: 100px;
+}
+.inputE {
+  width: 60%;
+  margin-left: 5%;
+  right: 0;
+  border-radius: 5px;
+  text-align: center;
+}
+.cajaVisto {
+  width: 200px;
+  margin-left: 30%;
+}
+@media (max-width: 900px) {
+  #caja00 {
+    width: 70%;
+  }
 }
 </style>

@@ -33,6 +33,7 @@
               id="form2Example13"
               class="form-control"
               placeholder="contraseña"
+              minlength="5"
               v-model="password"
             />
           </div>
@@ -96,7 +97,7 @@ export default {
       localStorage.mail = usuario.email;
       localStorage.name = usuario.name;
       axios
-        .post("http://localhost:9012/filmania/v1/usuario", usuario)
+        .post("http://localhost:9012/filmoteca/v1/usuario", usuario)
         .then((response) => {
           if (response.data == 0) {
             this.error = true;

@@ -42,9 +42,9 @@ const routes = [
     component: () => import('../views/UpdatePelicula.vue')
   },
   {
-    path: '/cuentaUsuario',
+    path: '/CuentaUsuario',
     name: 'cuentaUsuario',
-    component: () => import('../views/cuentaUsuario.vue')
+    component: () => import('../views/CuentaUsuario.vue')
   }
 ]
 const router = new VueRouter({

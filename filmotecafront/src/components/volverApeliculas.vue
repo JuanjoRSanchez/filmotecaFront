@@ -1,7 +1,7 @@
 <template>
     <div id="volver">       
         <div id="cajaVolver">
-            <router-link  to="/inicio" id="botones">Volver a tus películas</router-link> 
+            <router-link  to="/inicio" @click="borrarId" id="botones">Volver a tus películas</router-link> 
         </div>                 
     </div>
 </template>
@@ -14,6 +14,11 @@ export default {
     return {
     };
   },
+  methods: {
+      borrarId(){
+          localStorage.IdPelicula = "";
+      }
+  }
 }
 </script>
 <style scope>

@@ -1,11 +1,11 @@
 <template>
   <div id="hello">
     <h1>Bienvenido a Filmoteca!</h1>
-    <div>
+    <div class="caja">
       <p>Si ya tienes cuenta con nosotros, identificate</p>
       <router-link to="/login">Identificación</router-link>
     </div>
-    <div>
+    <div class="caja01">
       <p>Si no tienes cuenta, registra una</p>
       <router-link to="/newcount">Crear nueva cuenta</router-link>
     </div>
@@ -29,24 +29,18 @@ export default {
 #hello {
   top: 150px;
   margin: auto;
+  height: 100%;
   width: 60%;
   padding: 30px;
-  border: 1px solid red;
-  border-radius: 50px;
 }
 h3 {
   margin: 40px 0 0;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
 p {
-  margin-top: 20px;
+  /*
+    margin-top: 20px;
+
+  */
 }
 a {
   color: #edf8c6;
@@ -56,5 +50,8 @@ a {
   margin-bottom: 10px;
   border-radius: 10px;
   text-decoration: none;
+}
+.caja01{
+  margin-top: 50px;
 }
 </style>

@@ -3,49 +3,49 @@
     <section class="h-100 gradient-form">
       <movimiento />
       <volverApeliculas />
-      <div class="col-lg-12">
-        <div class="card-body p-md-5 mx-md-4 caja">
-          <form
-            v-on:submit.prevent="addPelicula"
-            oninput="result.value = slider.value"
-          >
-            <p>Introduce los datos de la película</p>
-            <div v-if="pelis"></div>
-            <div class="form-outline mb-4">
-              <label class="form-label" for="form2Example20">Título</label>
+      <div class="col-lg-12" id="caja00">
+        <form
+          v-on:submit.prevent="addPelicula"
+          oninput="result.value = slider.value"
+        >
+          <h4>Introduce los datos de la película</h4>
+          <hr />
+          <div class="cajaForm">
+            <div class="boxCampo">
+              <label class="label01" for="form2Example20">Título</label>
               <input
                 type="text"
                 id="form2Example20"
-                class="form-control text-center readOnly"
+                class="inputE readOnly"
                 v-model="titulo"
                 readonly
               />
             </div>
-            <div class="form-outline mb-4">
-              <label class="form-label" for="form2Example21">Año</label>
+            <div class="boxCampo">
+              <label class="label01" for="form2Example21">Año</label>
               <input
                 type="text"
                 id="form2Example21"
-                class="form-control text-center"
+                class="inputE"
                 v-model="anio"
               />
             </div>
-            <div class="form-outline mb-4">
-              <label class="form-label" for="form2Example22">Director</label>
+            <div class="boxCampo">
+              <label class="label01" for="form2Example22">Director</label>
               <input
                 type="text"
                 id="form2Example22"
-                class="form-control text-center readOnly"
+                class="inputE readOnly"
                 v-model="director"
                 readonly
               />
             </div>
-            <div class="form-outline mb-4">
-              <label class="form-label" for="form2Example13">Comentario</label>
+            <div class="boxCampo">
+              <label class="label01" for="form2Example13">Comentario</label>
               <input
                 type="text"
                 id="form2Example13"
-                class="form-control text-center inputE"
+                class="inputE"
                 v-model="comentario"
               />
             </div>
@@ -64,9 +64,11 @@
             <output name="result" for="slider">5</output>
             <hr />
             <p>¿Has visto la película?</p>
-            <div class="form-outline mb-4 cajaRadio">
-              <div class="form-check">
-                <label class="form-check-label" for="form2Example25">Si</label>
+            <div class="cajaVisto">
+              <div class="boxCampo">
+                <label class="form-check-label label01" for="form2Example25"
+                  >Si</label
+                >
                 <input
                   type="radio"
                   id="form2Example25"
@@ -75,8 +77,10 @@
                   value="true"
                 />
               </div>
-              <div class="form-check">
-                <label class="form-check-label" for="form2Example26">No</label>
+              <div class="boxCampo">
+                <label class="form-check-label label01" for="form2Example26"
+                  >No</label
+                >
                 <input
                   type="radio"
                   id="form2Example26"
@@ -85,23 +89,28 @@
                   value="false"
                 />
               </div>
+              <hr />
             </div>
             <div class="text-center pt-1 mb-5 pb-1">
               <button
                 class="btn btn-primary btn-block fa-lg mb-3"
                 type="submit"
                 to="/home"
+                
               >
                 Guardar
               </button>
             </div>
-          </form>
-        </div>
-      </div>
-      <div class="alert alert-danger" role="alert" v-if="error">
-        <p>{{ error_msg }}</p>
+          </div>
+        </form>
       </div>
     </section>
+    <div id="mensaje">
+      <input v-model="mensaje" type="text" />
+    </div>
+    <div id="mensajeAlerta">
+      <input v-model="mensajeAlerta" type="text" />
+    </div>
   </div>
 </template>
 <script>
@@ -136,6 +145,8 @@ export default {
       pelis: {},
       peliDTO: {},
       pelicula: {},
+      mensaje: "",
+      mensajeAlerta: ""
     };
   },
   created() {
@@ -149,30 +160,11 @@ export default {
   mounted() {
     this.AJAXConsultaPeliculaById(this.idPelicula);
   },
-  watch: {
-    titulo: function () {
-      this.AJAXConsultaPeliculaById();
-    },
-    director: function () {
-      this.AJAXConsultaDirector();
-    },
-  },
   methods: {
-    AJAXConsultaDirector() {
-      axios
-        .get("http://localhost:9012/filmania/v1/director/AJAX/" + this.director)
-        .then((response) => {
-          console.log(response.data);
-          if (response.data != null) {
-            this.resultadoAjaxNombre = response.data;
-          }
-        });
-    },
-
     AJAXConsultaPeliculaById() {
       axios
         .get(
-          "http://localhost:9012/filmania/v1/pelicula/" +
+          "http://localhost:9012/filmoteca/v1/pelicula/" +
             localStorage.idPelicula
         )
         .then((response) => {
@@ -191,54 +183,82 @@ export default {
       localStorage.idPelicula = "";
     },
     addPelicula() {
-      this.peliDTO.id = this.idPelicula;
-      this.peliDTO.emailusuario = localStorage.mail;
-      // Título
-      this.peliDTO.title = this.titulo;
-      // Años
-      this.peliDTO.anio = this.anio;
-      // Director
-      this.peliDTO.nombreDirector = this.director;
-      // Comentario
-      this.peliDTO.comentario = this.comentario;
-      // Nota
-      this.peliDTO.nota = this.nota;
-      // Vista
-      this.peliDTO.vista = this.vista;
+      const fecha = new Date();
+      const anioActual = fecha.getFullYear();
+      if (this.vista == "true") {
+        this.vista = true;
+      } else {
+        this.vista = false;
+      }
+      if (isNaN(this.anio)) {
+        this.alertaAnio = "Revisa la fecha por favor";
+      } else if (this.anio < 1880 || this.anio > anioActual) {
+        this.mensajeAlerta = "Revisa la fecha por favor";
+        document.getElementById("mensajeAlerta").style.display = "block";
+        setTimeout(this.ocultarMensajeAlerta, 3000);
+      } else if (this.comentario.length > 200) {
+        this.mensajeAlerta = "El comentario es demasiado largo";
+        document.getElementById("mensajeAlerta").style.display = "block";
+        setTimeout(this.ocultarMensajeAlerta, 3000);
+      } else {
+        this.peliDTO.id = this.idPelicula;
+        this.peliDTO.emailusuario = localStorage.mail;
+        // Título
+        this.peliDTO.title = this.titulo;
+        // Años
+        this.peliDTO.anio = this.anio;
+        // Director
+        this.peliDTO.nombreDirector = this.director;
+        // Comentario
+        this.peliDTO.comentario = this.comentario;
+        // Nota
+        this.peliDTO.nota = this.nota;
+        // Vista
+        this.peliDTO.vista = this.vista;
 
-      console.log(this.peliDTO);
-      axios
-        .put(
-          "http://localhost:9012/filmania/v1/pelicula/update/" +
-            this.idPelicula,
-          this.peliDTO
-        )
-        .then((response) => {
-          if (response.data === "ok") {
-            window.alert("La película se ha modificado con exito");
-            router.push("/inicio");
-          } else {
-            window.alert("La película no se pudo guardar");
-            router.push("/UpdatePelicula");
-          }
-        });
+        axios
+          .put(
+            "http://localhost:9012/filmoteca/v1/pelicula/update/" +
+              this.idPelicula,
+            this.peliDTO
+          )
+          .then((response) => {
+            if (response.data === "ok") {
+              this.mensaje = "La película se ha modificado con exito";
+              document.getElementById("mensaje").style.display = "block";
+              setTimeout(this.ocultarMensaje, 3000);
+            } else {
+              window.alert("La película no se pudo guardar");
+              //router.push("/UpdatePelicula");
+            }
+          });
+      }
       this.deleteDatosPelicula();
     },
     rellenarDirector(nombre) {
       this.director = nombre;
       this.resultadoAjaxNombre = "";
     },
+    ocultarMensaje() {
+      document.getElementById("mensaje").style.display = "none";
+      router.push("inicio");
+    },
+    ocultarMensajeAlerta() {
+      document.getElementById("mensajeAlerta").style.display = "none";
+    },
   },
 };
 </script>
 <style scoped>
-.caja {
-  text-align: center;
+#updatePelicula {
+  background-color: rgb(255, 255, 255);
+  height: 100%;
+  padding-bottom: 50px;
 }
-.caja input {
-  margin-right: auto;
-  margin-left: auto;
-  width: 50%;
+#caja00 {
+  background-color: rgb(253, 253, 253);
+  padding-top: 15px;
+  margin-bottom: 50px;
 }
 #slider {
   width: 30%;
@@ -268,14 +288,85 @@ section {
 #updatePelicula {
   margin: auto;
 }
-.cajaRadio {
-  margin: auto;
-  width: 10%;
-}
-.cajaRadio input {
-  margin-left: 27%;
-}
-.readOnly{
+.readOnly {
   background-color: bisque;
+}
+.boxCampo {
+  width: 100%;
+  margin-top: 15px;
+  margin-right: 10%;
+  margin-bottom: 15px;
+}
+.cajaForm {
+  width: 40%;
+  min-width: 350px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.label01 {
+  width: 100px;
+}
+.inputE {
+  width: 60%;
+  min-width: 300px;
+  margin: auto;
+  right: 0;
+  border-radius: 5px;
+}
+.cajaVisto {
+  width: 200px;
+  margin: auto;
+}
+#slider {
+  width: 80%;
+  max-width: 500px;
+}
+#mensajeAlerta {
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  right: 35%;
+  width: 30%;
+  height: 100px;
+  border: 1px solid rgb(116, 21, 21);
+  border-radius: 20px;
+  background-color: white;
+  display: none;
+}
+#mensajeAlerta button {
+  position: absolute;
+  right: 45%;
+  margin-top: 90px;
+}
+#mensajeAlerta input {
+  margin-top: 30px;
+  width: 450px;
+  border: none;
+  text-align: center;
+  color: rgb(116, 21, 21);
+}
+#mensaje {
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  right: 35%;
+  width: 30%;
+  height: 100px;
+  border: 1px solid rgb(0, 157, 255);
+  border-radius: 20px;
+  background-color: white;
+  display: none;
+}
+#mensaje button {
+  position: absolute;
+  right: 45%;
+  margin-top: 90px;
+}
+#mensaje input {
+  margin-top: 30px;
+  width: 450px;
+  border: none;
+  text-align: center;
+  color: rgb(0, 157, 255);
 }
 </style>

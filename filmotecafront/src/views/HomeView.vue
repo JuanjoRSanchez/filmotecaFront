@@ -28,9 +28,13 @@ export default {
 };
 </script>
 <style scoped>
+.home{
+  height: 100%;
+}
 img {
   margin-top: 50px;
   width: 60%;
+  min-width: 340px;
   margin-left: auto;
   margin-right: auto;
 }

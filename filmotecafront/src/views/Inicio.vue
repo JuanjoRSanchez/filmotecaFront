@@ -32,7 +32,7 @@
       <table id="pelis">
         <tr id="titulos">
           <td class="tdTitulo">Título</td>
-          <td class="tdMed">Año de estreno</td>
+          <td class="tdMed tdAnio">Año de estreno</td>
           <td class="tdDirector">Director</td>
           <td class="tdComentario">Comentario</td>
           <td class="tdMin">Nota</td>
@@ -42,8 +42,8 @@
         </tr>
         <tr id="peliculadetalles" v-for="peli in pelis" :key="peli.id">
           <td>{{ peli.title }}</td>
-          <td>{{ peli.anio }}</td>
-          <td>{{ peli.nombreDirector }}</td>
+          <td class="tdAnio">{{ peli.anio }}</td>
+          <td class="tdDirector">{{ peli.nombreDirector }}</td>
           <td class="tdComentario">{{ peli.comentario }}</td>
           <td>{{ peli.nota }}</td>
           <td v-if="peli.vista == true">
@@ -116,22 +116,6 @@
           </td>
         </tr>
       </table>
-      <!--
-      <div id="mensaje">
-          <input
-            type="text"
-            style="margin-top: 20px; width: 450px; text-align: center; border: none; color: red"
-            placeholder="Lo sentimos pero"
-          />
-
-          <input
-            v-model="mensaje"
-            type="text"
-            style="margin-top: 30px; width: 450px; border: none; text-align: center; color: red"
-          />
-          <button class="alert alert-danger" @click="cerrarVentana">cerrar</button>
-        </div>
-        -->
     </div>
   </div>
 </template>
@@ -169,6 +153,7 @@ export default {
   mounted() {
     if (localStorage.mail) {
       this.email = localStorage.mail;
+      //localStorage.idPelicula = "";
     } else {
       router.push({ name: "home" });
     }
@@ -185,12 +170,13 @@ export default {
       try {
         axios
           .get(
-            "http://localhost:9012/filmania/v1/pelicula/listas/" +
+            "http://localhost:9012/filmoteca/v1/pelicula/listas/" +
               localStorage.mail
           )
           .then((response) => {
             if (response.data != null) {
               this.pelis = response.data;
+              console.log(this.pelis);
             } else {
               this.error = true;
             }
@@ -207,7 +193,7 @@ export default {
         try {
           axios
             .delete(
-              "http://localhost:9012/filmania/v1/pelicula/borrar/" + peliID
+              "http://localhost:9012/filmoteca/v1/pelicula/borrar/" + peliID
             )
             .then((response) => {
               if (response.data == "ok") {
@@ -222,25 +208,25 @@ export default {
       }
     },
     ordenarPorAnio() {
-      if (this.sortAnio == "ascendente") {
+      if (this.sortAnio == "descendente") {
         this.pelis.sort(function (a, b) {
           return a.anio - b.anio;
         });
-        this.sortAnio = "descendente";
+        this.sortAnio = "ascendente";
       } else {
         this.pelis.sort(function (a, b) {
           return b.anio - a.anio;
         });
-        this.sortAnio = "ascendente";
+        this.sortAnio = "descendente";
       }
     },
     ordenarPorNota() {
-      if (this.sortNota == "descendente") {
+      if (this.sortNota == "descendente") {      
         this.pelis.sort(function (a, b) {
           return a.nota - b.nota;
         });
         this.sortNota = "ascendente";
-      } else {
+      } else {        
         this.pelis.sort(function (a, b) {
           return b.nota - a.nota;
         });
@@ -415,6 +401,12 @@ tr :hover span {
 }
 @media (max-width: 800px) {
   .tdComentario {
+    display: none;
+  }
+  .tdDirector{
+    display: none;
+  }
+  .tdAnio{
     display: none;
   }
 }

@@ -9,7 +9,7 @@
     </div>
     <hr />
     <div id="cajaEnlaces">
-      <ul id="cont">
+      <ul>
         <li>
           <p>Si ya tienes cuenta con nosotros, identificate</p>
           <hr />
@@ -44,14 +44,15 @@ export default {
 }
 #cajaEnlaces {
   width: 60%;
+  min-width: 330px;
   margin: auto;
-}
-#cont {
-  padding: 50px;
+  padding-top: 10px;
 }
 li {
   display: inline-block;
-  margin-right: 50px;
+  margin-bottom: 30px;
+  margin-right: 30px;
+  list-style: none;
 }
 hr {
   width: 80%;
@@ -81,5 +82,10 @@ hr {
 }
 a:hover {
   color: rgb(158, 192, 207);
+}
+@media (max-width: 500px){
+  #presentacion {
+    font-size: 12px;
+}
 }
 </style>
