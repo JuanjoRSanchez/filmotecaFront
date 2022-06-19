@@ -1,7 +1,7 @@
 <template>
     <div id="volver">       
         <div id="cajaVolver">
-            <router-link  to="/inicio" @click="borrarId" id="botones">Volver a tus películas</router-link> 
+            <router-link  to="/homePage" @click="borrarId" class="btn btn-primary">Volver a tus películas</router-link> 
         </div>                 
     </div>
 </template>
@@ -9,7 +9,7 @@
 import 'bootstrap/dist/css/bootstrap.css'
 
 export default {
-   name: "volverApeliculas",
+   name: "returnToHome",
     data: function () {
     return {
     };
@@ -23,7 +23,7 @@ export default {
 </script>
 <style scope>
 #volver{
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(3, 3, 3);
     height: 100px;
 }
 #cajaVolver{

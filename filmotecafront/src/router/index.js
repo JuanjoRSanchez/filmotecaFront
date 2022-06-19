@@ -1,35 +1,30 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import LandingPage from '../views/LandingPage.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'LandingPage',
+    component: LandingPage
   },
   {
-    path: '/about',
-    name: 'about',
-    component: () => import( '../views/AboutView.vue')
+    path: '/loginPage',
+    name: 'loginPage',
+    component: () => import( '../views/LoginPage.vue')
   },
   {
-    path: '/login',
-    name: 'login',
-    component: () => import( '../views/Login.vue')
-  },
-  {
-    path: '/newcount',
-    name: 'new-count',
-    component: () => import('../views/NewCount.vue'),
+    path: '/registrationPage',
+    name: 'registrationPage',
+    component: () => import('../views/RegistrationPage.vue'),
 
   },
   {
-    path: '/inicio',
-    name: 'inicioPage',
-    component: () => import('../views/Inicio.vue')
+    path: '/homePage',
+    name: 'homePage',
+    component: () => import('../views/HomePage.vue')
   },
   {
     path: '/AddPelicula',
@@ -42,9 +37,19 @@ const routes = [
     component: () => import('../views/UpdatePelicula.vue')
   },
   {
-    path: '/CuentaUsuario',
-    name: 'cuentaUsuario',
-    component: () => import('../views/CuentaUsuario.vue')
+    path: '/userAcount',
+    name: 'userAcount',
+    component: () => import('../views/UserAcount.vue')
+  },
+  {
+    path: '/politicasPrivacidad',
+    name: 'politicasPrivacidad',
+    component: () => import('../views/PrivacyPolitics.vue')
+  },
+  {
+    path: '/aboutFilmoteca',
+    name: 'aboutFilmoteca',
+    component: () => import('../views/AboutFilmoteca.vue')
   }
 ]
 const router = new VueRouter({

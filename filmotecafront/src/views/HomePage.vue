@@ -2,34 +2,53 @@
   <div id="caja">
     <div id="acciones">
       <div>
-        <movimiento />
+        <headerMain />
       </div>
-      <div>
-        <router-link
-          to="/AddPelicula"
-          type="button"
-          id="botones"
-          style="margin-top: 25px"
-        >
-          Añadir nueva película</router-link
-        >
-        <hr />
+      <div style="display: flex; height: 50px">
+        <div style="width: 50%">
+          <router-link to="/AddPelicula" type="button" class="btn btn-primary">
+            Añadir película</router-link
+          >
+        </div>
         <div id="ordenador">
-          <button id="btnOrdenar" @click="mostrarOrdenadores">Ordenar</button>
+          <button class="btn btn-primary" @click="mostrarOrdenadores">
+            Ordenar por:
+          </button>
           <ul id="ordenar">
-            <div>
-              <li><button @click="ordenarPorAnio">Año {{ sortAnio }}</button></li>
-              <li><button @click="ordenarPorNota">Nota {{ sortNota }}</button></li>
-              <li><button @click="ordenarPorDirector">Director</button></li>
-              <li><button @click="ordenarPorVistas">Vistas primero</button></li>
-              <li><button @click="ordenarPorTitulo">Quitar filtros</button></li>
+            <div >
+              <li>
+                <button class="btn btn-primary" @click="ordenarPorAnio">
+                  Año {{ sortAnio }}
+                </button>
+              </li>
+              <li>
+                <button class="btn btn-primary" @click="ordenarPorNota">
+                  Nota {{ sortNota }}
+                </button>
+              </li>
+              <li>
+                <button class="btn btn-primary" @click="ordenarPorDirector">
+                  Director
+                </button>
+              </li>
+              <li>
+                <button class="btn btn-primary" @click="ordenarPorVistas">
+                  Vistas primero
+                </button>
+              </li>
+              <li>
+                <button class="btn btn-primary" @click="ordenarPorTitulo">
+                  Quitar filtros
+                </button>
+              </li>
             </div>
           </ul>
         </div>
       </div>
+      <hr />
     </div>
-    <div v-if="pelis">
-      <table id="pelis">
+    <div v-if="pelis" style="z-index: -1">
+      <table id="pelis" style="z-index: 2">
         <tr id="titulos">
           <td class="tdTitulo">Título</td>
           <td class="tdMed tdAnio">Año de estreno</td>
@@ -40,7 +59,7 @@
           <td class="btnMan tdMin">Eliminar</td>
           <td class="btnMan tdMin">Modificar</td>
         </tr>
-        <tr id="peliculadetalles" v-for="peli in pelis" :key="peli.id">
+        <tr id="peliculadetalles" v-for="peli in datosPaginados" :key="peli.id">
           <td>{{ peli.title }}</td>
           <td class="tdAnio">{{ peli.anio }}</td>
           <td class="tdDirector">{{ peli.nombreDirector }}</td>
@@ -76,8 +95,9 @@
           </td>
           <td class="btnMan">
             <a
+              href="#"
               class="btn btn-outline-primary btnBorrar"
-              @click="deletePelicula(peli.id)"
+              @click="confirmar(peli.id)"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -117,25 +137,70 @@
         </tr>
       </table>
     </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item active" @click="getPreviousPage()">
+          <a class="page-link" href="#">Anterior</a>
+        </li>
+        <li
+          id="part"
+          class="page-item"
+          v-bind:class="isActive(pagina)"
+          v-for="pagina in totalPaginas()"
+          :key="pagina.index"
+          @click="getDataPagina(pagina)"
+        >
+          <a class="page-link" href="#">{{ pagina }}</a>
+        </li>
+        <li class="page-item active" @click="getNextPage()">
+          <a class="page-link" href="#">Siguiente</a>
+        </li>
+      </ul>
+      <p style="color: white">Total de películas {{ this.pelis.length }}</p>
+    </nav>
+    <div id="mensajeConfirmacion">
+      <input v-model="mensajeConfirmacion" id="inp" type="text" />
+      <div>
+        <button
+          class="btn btn-danger btn-block fa-lg mb-3"
+          @click="deletePelicula()"
+        >
+          Si
+        </button>
+        <button
+          class="btn btn-primary btn-block fa-lg mb-3"
+          @click="noEliminar"
+        >
+          No
+        </button>
+      </div>
+    </div>
+    <div id="foot">
+      <footerComponent />
+    </div>
   </div>
 </template>
 <script>
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
-import movimiento from "../components/movimiento.vue";
+import headerMain from "../components/Header.vue";
+import footerComponent from "../components/FooterComponent.vue";
 import router from "../router";
 
 export default {
-  name: "inicioPage",
+  name: "homePage",
   components: {
-    movimiento,
+    headerMain,
+    footerComponent,
   },
   data: function () {
     return {
       nombre: "",
       email: "",
       password: "",
-      pelis: {},
+      pelis: [],
+      pelisTra: {},
+      idPelicula: "",
       director: {},
       error: false,
       error_msg: "",
@@ -145,22 +210,23 @@ export default {
       sortNota: "descendente",
       sortDirector: "descendente",
       mensaje:
-        "Lo sentimos en este momento no podemos acceder a tus películas, prueba más tarde",
+        "Lo sentimos, en este momento no podemos acceder a tus películas, prueba más tarde",
+      mensajeConfirmacion: "¿Esta seguro de liminar la película?",
       sortTitulo: "descendente",
-      sortVista: "descendente"
+      sortVista: "descendente",
+      elementosPagina: 10,
+      datosPaginados: [],
+      paginaActual: 1,
     };
   },
   mounted() {
     if (localStorage.mail) {
       this.email = localStorage.mail;
-      //localStorage.idPelicula = "";
+      this.getPeliculasDTO();
     } else {
-      router.push({ name: "home" });
+      router.push({ name: "LandingPage" });
     }
     document.getElementById("ordenar").style.display = "none";
-  },
-  created() {
-    this.getPeliculasDTO();
   },
   methods: {
     setIdPelicula(peliId) {
@@ -176,7 +242,7 @@ export default {
           .then((response) => {
             if (response.data != null) {
               this.pelis = response.data;
-              console.log(this.pelis);
+              this.getDataPagina(this.paginaActual);
             } else {
               this.error = true;
             }
@@ -188,54 +254,61 @@ export default {
         console.log(error);
       }
     },
-    deletePelicula(peliID) {
-      if (window.confirm("Está apunto de borrar la película ¿Está seguro?")) {
-        try {
-          axios
-            .delete(
-              "http://localhost:9012/filmoteca/v1/pelicula/borrar/" + peliID
-            )
-            .then((response) => {
-              if (response.data == "ok") {
-                location.reload();
-              } else {
-                window.alert("No se ha podido borrar la película");
-              }
-            });
-        } catch (error) {
-          console.log(error);
-        }
+    deletePelicula() {
+      try {
+        axios
+          .delete(
+            "http://localhost:9012/filmoteca/v1/pelicula/borrar/" +
+              this.idPelicula
+          )
+          .then((response) => {
+            if (response.data == "ok") {
+              location.reload();
+            } else {
+              window.alert("No se ha podido borrar la película");
+            }
+          });
+      } catch (error) {
+        console.log(error);
       }
     },
     ordenarPorAnio() {
+      this.datosPaginados = this.pelis;
+
       if (this.sortAnio == "descendente") {
-        this.pelis.sort(function (a, b) {
+        this.datosPaginados.sort(function (a, b) {
           return a.anio - b.anio;
         });
         this.sortAnio = "ascendente";
       } else {
-        this.pelis.sort(function (a, b) {
+        this.datosPaginados.sort(function (a, b) {
           return b.anio - a.anio;
         });
         this.sortAnio = "descendente";
       }
+      this.getDataPagina(this.paginaActual);
+      this.mostrarOrdenadores();
     },
     ordenarPorNota() {
-      if (this.sortNota == "descendente") {      
-        this.pelis.sort(function (a, b) {
+      this.datosPaginados = this.pelis;
+      if (this.sortNota == "descendente") {
+        this.datosPaginados.sort(function (a, b) {
           return a.nota - b.nota;
         });
         this.sortNota = "ascendente";
-      } else {        
-        this.pelis.sort(function (a, b) {
+      } else {
+        this.datosPaginados.sort(function (a, b) {
           return b.nota - a.nota;
         });
         this.sortNota = "descendente";
       }
+      this.getDataPagina(this.paginaActual);
+      this.mostrarOrdenadores();
     },
     ordenarPorDirector() {
+      this.datosPaginados = this.pelis;
       if (this.sortDirector == "descendente") {
-        this.pelis.sort((a, b) => {
+        this.datosPaginados.sort((a, b) => {
           if (
             a.nombreDirector.charAt(0).toLowerCase() <
             b.nombreDirector.charAt(0).toLowerCase()
@@ -245,7 +318,7 @@ export default {
         });
         this.sortDirector = "ascendente";
       } else {
-        this.pelis.sort((a, b) => {
+        this.datosPaginados.sort((a, b) => {
           if (
             a.nombreDirector.charAt(0).toLowerCase() >
             b.nombreDirector.charAt(0).toLowerCase()
@@ -255,21 +328,22 @@ export default {
         });
         this.sortDirector = "descendente";
       }
+      this.getDataPagina(this.paginaActual);
+      this.mostrarOrdenadores();
       return 0;
     },
     ordenarPorTitulo() {
       location.reload();
     },
     ordenarPorVistas() {
-        this.pelis.sort((a, b) => {
-          if (
-            a.vista >
-            b.vista
-          ) {
-            return -1;
-          }
-        });
-       
+      this.datosPaginados = this.pelis;
+      this.datosPaginados.sort((a, b) => {
+        if (a.vista > b.vista) {
+          return -1;
+        }
+      });
+      this.getDataPagina(this.paginaActual);
+      this.mostrarOrdenadores();
       return 0;
     },
     mostrarOrdenadores() {
@@ -277,57 +351,72 @@ export default {
       if (disp == "") {
         document.getElementById("ordenar").style.display = "none";
       } else {
-        document.getElementById("ordenar").style.display = "";
+        document.getElementById("ordenar").style.display = "block";
       }
     },
     cerrarVentana() {
       document.getElementById("mensaje").style.display = "none";
       location.reload();
     },
+    totalPaginas() {
+      return Math.ceil(this.pelis.length / this.elementosPagina);
+    },
+    getDataPagina(noPagina) {
+      this.paginaActual = noPagina;
+      let ini = noPagina * this.elementosPagina - this.elementosPagina;
+      let fin = noPagina * this.elementosPagina;
+      this.datosPaginados = this.pelis.slice(ini, fin);
+    },
+    getPreviousPage() {
+      if (this.paginaActual > 1) {
+        this.paginaActual--;
+      }
+      this.getDataPagina(this.paginaActual);
+    },
+    getNextPage() {
+      if (this.paginaActual < this.totalPaginas()) {
+        this.paginaActual++;
+      }
+      this.getDataPagina(this.paginaActual);
+    },
+    isActive(noPagina) {
+      return noPagina == this.paginaActual ? "active" : "";
+    },
+    ocultarMensaje() {
+      document.getElementById("mensaje").style.display = "none";
+    },
+    confirmar(id) {
+      document.getElementById("mensajeConfirmacion").style.display = "block";
+      this.idPelicula = id;
+    },
+    noEliminar() {
+      document.getElementById("mensajeConfirmacion").style.display = "none";
+    },
   },
 };
 </script>
 <style scoped>
 #caja {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(5, 5, 5);
   padding-bottom: 100px;
   min-height: 700px;
 }
 #ordenador {
-  margin-top: 50px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
+  width: 50%;
+  z-index: 999;
 }
 #ordenar {
   display: "none";
-}
-#ordenar li button {
-  width: 150px;
+  width: 30%;
+  min-width: 200px;
+  background-color: rgb(0, 0, 0);
   border-radius: 5px;
-  border: 1px solid rgb(198, 198, 221);
-  background-color: rgb(148, 148, 196);
-}
-#ordenar li button:hover {
-  width: 150px;
-  border-radius: 5px;
-  border: 1px solid rgb(148, 148, 196);
-  background-color: rgb(198, 198, 221);
+  border: 3px solid rgb(61, 61, 61);
+  margin: auto;
+  opacity: 1;
 }
 #ordenar div {
   margin-top: 20px;
-}
-#btnOrdenar {
-  width: 50%;
-  border-radius: 5px;
-  border: 1px solid rgb(198, 198, 221);
-  background-color: rgb(148, 148, 196);
-}
-#btnOrdenar:hover {
-  width: 50%;
-  border-radius: 5px;
-  border: 1px solid rgb(148, 148, 196);
-  background-color: rgb(198, 198, 221);
 }
 .tdMin {
   width: 50px;
@@ -344,7 +433,6 @@ export default {
 span {
   display: none;
 }
-
 #pelis {
   width: 90%;
   margin-left: auto;
@@ -355,8 +443,8 @@ span {
 #peliculadetalles > td {
   padding-bottom: 5px;
   padding-top: 5px;
-  border: 1px solid blue;
-
+  border: 1px solid rgb(3, 99, 102);
+  color: white;
   border-radius: 10px 10px 10px 10px;
 }
 #titulos td {
@@ -368,6 +456,9 @@ th {
 tr :hover span {
   display: block;
 }
+.btnLista:hover {
+  background-color: aquamarine;
+}
 #btn {
   margin-top: 15px;
 }
@@ -378,7 +469,7 @@ tr :hover span {
   background-color: red;
 }
 #titulos td {
-  background-color: blue;
+  background-color: rgb(3, 99, 102);
   color: white;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -399,15 +490,66 @@ tr :hover span {
   right: 45%;
   margin-top: 90px;
 }
+#mensajeConfirmacion {
+  position: absolute;
+  top: 25%;
+  bottom: 50%;
+  right: 35%;
+  width: 30%;
+  height: 25%;
+  border: 3px solid rgb(255, 254, 254);
+  background-color: rgb(201, 21, 21);
+  border-radius: 20px;
+  display: none;
+}
+#mensajeConfirmacion div {
+  display: flex;
+  color: white;
+}
+#mensajeConfirmacion button:first-of-type {
+  position: absolute;
+  right: 25%;
+  margin-top: 40px;
+  margin-right: 10%;
+}
+#mensajeConfirmacion button {
+  position: absolute;
+  right: 45%;
+  margin-top: 40px;
+  margin-right: 10%;
+  border: 1px solid white;
+}
+#mensajeConfirmacion input {
+  margin-top: 30px;
+  width: 400px;
+  border: none;
+  text-align: center;
+  color: white;
+  background-color: rgb(201, 21, 21);
+}
+#foot {
+  margin-top: 10%;
+}
 @media (max-width: 800px) {
   .tdComentario {
     display: none;
   }
-  .tdDirector{
+  .tdDirector {
     display: none;
   }
-  .tdAnio{
+  .tdAnio {
     display: none;
+  }
+  nav {
+    font-size: 8px;
+  }
+  #ordenar li button {
+    font-size: 10px;
+  }
+  #peliculadetalles > td {
+    font-size: 12px;
   }
 }
 </style>
+
+

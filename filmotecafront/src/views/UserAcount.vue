@@ -1,9 +1,9 @@
 <template>
   <div id="cuentaUsuario">
     <section class="h-100 gradient-form">
-      <movimiento />
-      <volverApeliculas />
-      <div class="col-lg-12" id="caja00">
+      <headerMain />
+      <returnToHome />
+      <div class="col-lg-12" id="cajaUser">
         <form v-on:submit.prevent="updateUsuario">
           <h3>Estos son tus datos</h3>
           <div class="boxCampo">
@@ -13,6 +13,7 @@
               id="form2Example21"
               class="inputE"
               v-model="nombre"
+              required
             />
           </div>
           <div class="boxCampo">
@@ -23,6 +24,7 @@
               class="inputE"
               minlength="5"
               v-model="password"
+              required
             />
           </div>
           <div class="boxCampo">
@@ -32,13 +34,14 @@
               id="form2Example23"
               class="inputE"
               v-model="email"
+              required
             />
           </div>
           <div class="boxCampo">
-            <label class="label01" for="form2Example13">Fecha de alta</label>
+            <label class="label01" for="form2Example33">Fecha de alta</label>
             <input
               type="text"
-              id="form2Example13"
+              id="form2Example33"
               class="inputE readOnly"
               v-model="fechaAlta"
               readonly
@@ -71,9 +74,7 @@
     <div id="mensajeConfirmacion">
       <input
         v-model="mensajeConfirmacion"
-        id="inp"
         type="text"
-        placeholder="¿Esta seguro de liminar su cuenta de Filmoteca?"
       />
       <div>
         <button
@@ -90,22 +91,23 @@
         </button>
       </div>
     </div>
+    <footerComponent />
   </div>
 </template>
 <script>
 import "bootstrap/dist/css/bootstrap.css";
-
-//import router from "../router/index.js";
-import movimiento from "../components/movimiento.vue";
-import volverApeliculas from "../components/volverApeliculas.vue";
+import headerMain from "../components/Header.vue";
+import returnToHome from "../components/ReturnToHome.vue";
 import axios from "axios";
 import router from "../router/index.js";
+import FooterComponent from "../components/FooterComponent.vue";
 
 export default {
-  name: "inicioPage",
+  name: "userAcount",
   components: {
-    movimiento,
-    volverApeliculas,
+    headerMain,
+    returnToHome,
+    FooterComponent,
   },
   data: function () {
     return {
@@ -120,7 +122,7 @@ export default {
       nombre: "",
       fechaAlta: "",
       mensaje: "",
-      mensajeConfirmacion: "",
+      mensajeConfirmacion: "¿Esta seguro de liminar su cuenta de Filmoteca?",
     };
   },
   mounted() {
@@ -156,18 +158,12 @@ export default {
       }
     },
     updateUsuario() {
-      /*
-      this.usuario.nombre = this.nombre;
-      this.usuario.password = this.password;
-      this.usuario.email = this.email;
-      this.usuario.id_usuario = this.id;
-*/
       this.usuario = {
         name: this.nombre,
         password: this.password,
         email: this.email,
-        id_usuario: this.id
-      }
+        id_usuario: this.id,
+      };
       axios
         .put("http://localhost:9012/filmoteca/v1/usuario", this.usuario)
         .then((response) => {
@@ -179,17 +175,15 @@ export default {
             this.password = this.usuario.password;
             this.email = this.usuario.email;
 
+            localStorage.mail = this.email;
+            localStorage.name = this.name;
             this.mensaje = "El usuario se actualizó con exito";
             document.getElementById("mensaje").style.display = "block";
             setTimeout(this.ocultarMensaje, 3000);
           }
         });
-     // this.getUsuario();
     },
     eliminarUsuario() {
-      document.getElementById("mensaje").style.border = "1px solid red";
-      document.getElementById("inp").style.color = "red";
-
       try {
         axios
           .delete(
@@ -200,9 +194,9 @@ export default {
             if (response.data == 0) {
               this.mensaje = "Cuenta eliminada con exito";
               setTimeout(function () {
-                router.push({ name: "home" });
+                router.push({ name: "LandingPage" });
               }, 2000);
-              // router.push({name: "home"});
+               //router.push({name: "LandingPage"});
             } else {
               this.mensaje =
                 "No ha sido posible eliminar tu cuenta en este momento";
@@ -231,19 +225,20 @@ export default {
 </script>
 <style scoped>
 #cuentaUsuario {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
   height: 100%;
   padding-bottom: 1px;
 }
-#caja00 {
+#cajaUser {
   text-align: center;
   width: 50%;
   min-width: 350px;
   height: 45%;
   margin: auto;
   padding-top: 20px;
-  background-color: rgb(60, 203, 228);
+  background-color: rgb(46, 11, 92);
   border-radius: 20px;
+  color: aliceblue;
 }
 .readOnly {
   background-color: bisque;
@@ -252,7 +247,7 @@ export default {
   width: 30%;
 }
 section {
-  background-color: white;
+  background-color: rgb(2, 2, 2);
 }
 #sug > li {
   list-style: none;
@@ -267,7 +262,7 @@ section {
 #usuario {
   position: relative;
   width: 150px;
-  background-color: rgb(0, 255, 200);
+  background-color: rgb(53, 70, 88);
   margin-left: 80%;
   padding-bottom: 5px;
   padding-top: 5px;
@@ -289,10 +284,10 @@ section {
   bottom: 50%;
   right: 35%;
   width: 30%;
-  height: 30%;
-  border: 1px solid rgb(0, 157, 255);
+  height: 100px;
+  border: 3px solid rgb(255, 255, 255);
   border-radius: 20px;
-  background-color: white;
+  background-color: rgb(27, 148, 82);
   display: none;
 }
 #mensaje button {
@@ -301,11 +296,11 @@ section {
   margin-top: 90px;
 }
 #mensaje input {
-  margin-top: 30px;
-  width: 450px;
+  width: 400px;
   border: none;
   text-align: center;
-  color: rgb(0, 157, 255);
+  color: rgb(254, 255, 254);
+  background-color: rgb(27, 148, 82);
 }
 #mensajeConfirmacion {
   position: absolute;
@@ -314,12 +309,14 @@ section {
   right: 35%;
   width: 30%;
   height: 22%;
-  border: 3px solid rgb(255, 0, 0);
   border-radius: 20px;
-  background-color: white;
+  border: 3px solid rgb(255, 254, 254);
+  background-color: rgb(201, 21, 21);
+  border: 1px solid white;
   display: none;
 }
 #mensajeConfirmacion div {
+  color: white;
   display: flex;
 }
 #mensajeConfirmacion button:first-of-type {
@@ -333,13 +330,15 @@ section {
   right: 45%;
   margin-top: 40px;
   margin-right: 10%;
+  border: 1px solid white;
 }
 #mensajeConfirmacion input {
   margin-top: 30px;
-  width: 450px;
+  width: 400px;
   border: none;
   text-align: center;
-  color: rgb(0, 157, 255);
+  color: white;
+  background-color:  rgb(201, 21, 21)
 }
 .boxCampo {
   width: 100%;
@@ -369,6 +368,9 @@ section {
 @media (max-width: 900px) {
   #caja00 {
     width: 70%;
+  }
+  .inputE{
+    width: 90%;
   }
 }
 </style>

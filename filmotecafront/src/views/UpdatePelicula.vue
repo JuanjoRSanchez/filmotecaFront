@@ -1,9 +1,9 @@
 <template>
   <div id="updatePelicula">
     <section class="h-100 gradient-form">
-      <movimiento />
-      <volverApeliculas />
-      <div class="col-lg-12" id="caja00">
+      <headerMain />
+      <returnToHome />
+      <div class="col-lg-12" id="cajaUpdate">
         <form
           v-on:submit.prevent="addPelicula"
           oninput="result.value = slider.value"
@@ -40,14 +40,14 @@
                 readonly
               />
             </div>
-            <div class="boxCampo">
-              <label class="label01" for="form2Example13">Comentario</label>
-              <input
-                type="text"
+            <div class="cajaComentario">
+              <label class="label02" for="form2Example13">Comentario</label>
+              <textarea
                 id="form2Example13"
-                class="inputE"
+                class="inputtE textArea"
                 v-model="comentario"
-              />
+              >
+              </textarea>
             </div>
             <label>Ponle nota</label><br />
             <input
@@ -96,7 +96,6 @@
                 class="btn btn-primary btn-block fa-lg mb-3"
                 type="submit"
                 to="/home"
-                
               >
                 Guardar
               </button>
@@ -111,20 +110,23 @@
     <div id="mensajeAlerta">
       <input v-model="mensajeAlerta" type="text" />
     </div>
+    <footerComponent />
   </div>
 </template>
 <script>
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
 import router from "../router/index.js";
-import movimiento from "../components/movimiento.vue";
-import volverApeliculas from "../components/volverApeliculas.vue";
+import headerMain from "../components/Header.vue";
+import returnToHome from "../components/ReturnToHome.vue";
+import FooterComponent from "../components/FooterComponent.vue";
 
 export default {
   name: "updatePelicula",
   components: {
-    movimiento,
-    volverApeliculas,
+    headerMain,
+    returnToHome,
+    FooterComponent,
   },
   data: function () {
     return {
@@ -146,7 +148,7 @@ export default {
       peliDTO: {},
       pelicula: {},
       mensaje: "",
-      mensajeAlerta: ""
+      mensajeAlerta: "",
     };
   },
   created() {
@@ -154,11 +156,8 @@ export default {
       this.idPelicula = localStorage.idPelicula;
       this.AJAXConsultaPeliculaById(this.idPelicula);
     } else {
-      router.push({ name: "home" });
+      router.push({ name: "LandingPage" });
     }
-  },
-  mounted() {
-    this.AJAXConsultaPeliculaById(this.idPelicula);
   },
   methods: {
     AJAXConsultaPeliculaById() {
@@ -169,8 +168,6 @@ export default {
         )
         .then((response) => {
           this.pelicula = response.data;
-          console.log(this.pelicula);
-          console.log("Pelicula deevuelta" + " " + this.pelicula.nota);
           this.director = this.pelicula.nombreDirector;
           this.titulo = this.pelicula.title;
           this.anio = this.pelicula.anio;
@@ -224,12 +221,14 @@ export default {
           )
           .then((response) => {
             if (response.data === "ok") {
-              this.mensaje = "La película se ha modificado con exito";
+              this.mensaje = "La película se ha actualizado con exito";
               document.getElementById("mensaje").style.display = "block";
               setTimeout(this.ocultarMensaje, 3000);
             } else {
-              window.alert("La película no se pudo guardar");
-              //router.push("/UpdatePelicula");
+              this.mensajeAlerta =
+                "Lo sentimos pero no pudimos actualizar la película, intentalo más tarde";
+              document.getElementById("mensajeAlerta").style.display = "block";
+              setTimeout(this.ocultarMensaje, 3000);
             }
           });
       }
@@ -241,7 +240,7 @@ export default {
     },
     ocultarMensaje() {
       document.getElementById("mensaje").style.display = "none";
-      router.push("inicio");
+      router.push("homePage");
     },
     ocultarMensajeAlerta() {
       document.getElementById("mensajeAlerta").style.display = "none";
@@ -251,12 +250,12 @@ export default {
 </script>
 <style scoped>
 #updatePelicula {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
   height: 100%;
-  padding-bottom: 50px;
+  color: white;
 }
-#caja00 {
-  background-color: rgb(253, 253, 253);
+#cajaUpdate {
+  background-color: rgb(0, 0, 0);
   padding-top: 15px;
   margin-bottom: 50px;
 }
@@ -264,7 +263,7 @@ export default {
   width: 30%;
 }
 section {
-  background-color: white;
+  background-color: rgb(2, 2, 2);
 }
 #sug > li {
   list-style: none;
@@ -313,6 +312,25 @@ section {
   right: 0;
   border-radius: 5px;
 }
+.cajaComentario {
+  width: 80%;
+  height: 110px;
+  display: flex;
+  margin-bottom: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 19px;
+}
+.label02 {
+  width: 100px;
+  margin-bottom: 50px;
+  margin-right: 10px;
+}
+.textArea {
+  width: 100%;
+  border-radius: 10px;
+  max-height: 110px;
+}
 .cajaVisto {
   width: 200px;
   margin: auto;
@@ -328,22 +346,18 @@ section {
   right: 35%;
   width: 30%;
   height: 100px;
-  border: 1px solid rgb(116, 21, 21);
+  border: 3px solid rgb(201, 21, 21);
   border-radius: 20px;
-  background-color: white;
+  background-color: rgb(201, 21, 21);
   display: none;
-}
-#mensajeAlerta button {
-  position: absolute;
-  right: 45%;
-  margin-top: 90px;
 }
 #mensajeAlerta input {
   margin-top: 30px;
-  width: 450px;
+  width: 400px;
   border: none;
   text-align: center;
-  color: rgb(116, 21, 21);
+  background-color: rgb(201, 21, 21);
+  color: rgb(255, 255, 255);
 }
 #mensaje {
   position: absolute;
@@ -352,21 +366,58 @@ section {
   right: 35%;
   width: 30%;
   height: 100px;
-  border: 1px solid rgb(0, 157, 255);
+  border: 3px solid rgb(27, 148, 82);
   border-radius: 20px;
-  background-color: white;
+  background-color: rgb(27, 148, 82);
   display: none;
-}
-#mensaje button {
-  position: absolute;
-  right: 45%;
-  margin-top: 90px;
 }
 #mensaje input {
   margin-top: 30px;
-  width: 450px;
+  width: 400px;
   border: none;
   text-align: center;
-  color: rgb(0, 157, 255);
+  color: rgb(253, 253, 253);
+  background-color: rgb(27, 148, 82);
+}
+@media (min-width: 966px) and (max-width: 1280px) {
+  .cajaComentario {
+    width: 80%;
+    height: 110px;
+    display: flex;
+    margin-bottom: 30px;
+    margin-right: 10%;
+    padding-left: 0px;
+  }
+  .label02 {
+    width: 90px;
+    margin-bottom: 50px;
+    margin-right: 10px;
+  }
+  .textArea {
+    width: 80%;
+    min-width: 300px;
+    border-radius: 10px;
+    max-height: 110px;
+  }
+}
+@media (max-width: 1120px) {
+  .cajaComentario {
+    width: 100%;
+    height: 150px;
+    display: block;
+    padding-left: 0px;
+  }
+  .textArea {
+    width: 100%;
+    min-width: 300px;
+    border-radius: 10px;
+    height: 80%;
+    max-height: 180px;
+  }
+  .label02 {
+    width: 90px;
+    margin-bottom: 5px;
+    margin-right: 10px;
+  }
 }
 </style>

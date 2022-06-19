@@ -1,8 +1,8 @@
 <template>
   <div id="newCount">
     <movimiento />
-    <section class="h-100 gradient-form" style="background-color: #eee">
-      <div id="caja00">
+    <section class="h-100 gradient-form">
+      <div id="cajaRegistro">
         <form v-on:submit.prevent="registrar">
           <h2>Crear una nueva cuenta</h2>
           <hr style="color: white" />
@@ -44,24 +44,11 @@
           </div>
         </form>
         <div id="mensaje">
-          <input
-            type="text"
-            style="
-              margin-top: 20px;
-              width: 450px;
-              text-align: center;
-              border: none;
-              color: red;
-            "
-            placeholder="Lo sentimos pero"
-          />
           <input v-model="mensaje" type="text" />
         </div>
       </div>
     </section>
-    <div class="alert alert-danger" role="alert" v-if="error">
-      {{ error_msg }}
-    </div>
+    <footerComponent />
   </div>
 </template>
 
@@ -69,20 +56,20 @@
 import axios from "axios";
 import router from "../router/index.js";
 import "bootstrap/dist/css/bootstrap.css";
-import movimiento from "../components/movimiento.vue";
+import movimiento from "../components/Header.vue";
+import FooterComponent from "../components/FooterComponent.vue";
 
 export default {
-  name: "new-count",
+  name: "registrationPage",
   components: {
     movimiento,
+    FooterComponent,
   },
   data: function () {
     return {
       usuario: "",
       password: "",
       email: "",
-      error: false,
-      error_msg: "",
       mensaje: "",
     };
   },
@@ -100,18 +87,15 @@ export default {
         .post("http://localhost:9012/filmoteca/v1/usuario", usuario)
         .then((response) => {
           if (response.data == 0) {
-            this.error = true;
-            this.error_msg = response.data.result.error_msg;
+            this.mensaje =
+              "Lo sentimos pero ya existe un usuario con este Email";
             document.getElementById("mensaje").style.display = "block";
             setTimeout(this.ocultarMensaje, 3000);
           } else {
             document.getElementById("mensaje").style.display = "block";
-            this.mensaje = this.response;
-            router.push("inicio");
+            this.mensaje = "";
+            router.push("homePage");
           }
-        })
-        .catch((error) => {
-          console.log(error);
         });
     },
     ocultarMensaje() {
@@ -121,6 +105,10 @@ export default {
 };
 </script>
 <style scope>
+section {
+  padding-top: 10px;
+  background-color: black;
+}
 h2 {
   color: white;
 }
@@ -128,32 +116,28 @@ form {
   padding: 50px;
 }
 #newCount {
-  height: 100%;
+  height: 550px;
   width: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #3f3f3f;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
 }
-section {
-  padding-top: 50px;
-}
-#caja00 {
+#cajaRegistro {
   margin: auto;
   width: 35%;
+  min-width: 350px;
   height: 500px;
-  background-color: rgb(60, 203, 228);
+  background-color: rgb(46, 11, 92);
   border-radius: 20px;
+  color: white;
 }
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+#cajaRegistro input {
+  width: 80%;
+  min-width: 270px;
+  margin-right: auto;
+  margin-left: auto;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
 #logo {
   position: relative;
@@ -172,14 +156,18 @@ section {
   bottom: 50%;
   width: 35%;
   height: 30%;
-  border: 1px solid red;
+  border: 3px solid rgb(255, 253, 253);
   border-radius: 20px;
-  background-color: white;
+  background-color: rgb(179, 23, 23);
   display: none;
+  padding-top: 50px;
+  text-align: center;
 }
-#mensaje button {
-  position: absolute;
-  right: 45%;
-  margin-top: 90px;
+#mensaje input {
+  width: 100%;
+  background-color: rgb(179, 23, 23);
+  text-align: center;
+  border: none;
+  color: white;
 }
 </style>

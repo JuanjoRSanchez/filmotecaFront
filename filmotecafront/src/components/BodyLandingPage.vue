@@ -1,6 +1,6 @@
 <template>
-  <div id="cabeceraEntrada">
-    <h1>Bienvenido a Filmoteca!</h1>
+  <div id="BodyLandingPage">
+    <h2>Bienvenido a Filmoteca!</h2>
     <div id="presentacion">
       Si eres un cinefilo esta es tu aplicación de gestión de peliculas. Guarda
       información de tus películas, comentarios, notas, etc... Marca las que has
@@ -13,12 +13,12 @@
         <li>
           <p>Si ya tienes cuenta con nosotros, identificate</p>
           <hr />
-          <router-link id="botones" to="/login">Identificación</router-link>
+          <router-link id="botones" to="/loginPage">Identificación</router-link>
         </li>
         <li>
           <p>Si no tienes cuenta, registra una</p>
           <hr />
-          <router-link id="botones" to="/newcount"
+          <router-link id="botones" to="/registrationPage"
             >Crear nueva cuenta</router-link
           >
         </li>
@@ -28,8 +28,9 @@
 </template>
 <script>
 import "bootstrap/dist/css/bootstrap.css";
+
 export default {
-  name: "cabeceraEntrada",
+  name: "bodyLandingPage",
   data: function () {
     return {
       email: localStorage.mail,
@@ -38,12 +39,17 @@ export default {
 };
 </script>
 <style scope>
+#BodyLandingPage {
+  color: white;
+  height: 250px;
+  padding-top: 50px;
+}
 #presentacion {
-  width: 80%;
+  width: 95%;
   margin: auto;
 }
 #cajaEnlaces {
-  width: 60%;
+  width: 70%;
   min-width: 330px;
   margin: auto;
   padding-top: 10px;
@@ -59,11 +65,6 @@ hr {
   margin-left: auto;
   margin-right: auto;
   color: rgb(111, 145, 255);
-}
-#cabeceraEntrada {
-  color: white;
-  height: 350px;
-  padding-top: 50px;
 }
 #cajaUsuario {
   width: 250px;
@@ -82,6 +83,14 @@ hr {
 }
 a:hover {
   color: rgb(158, 192, 207);
+}
+@media (min-width: 501) and (max-width: 950px){
+#BodyLandingPage {
+  height: 550px;
+}
+#presentacion {
+    font-size: 12px;
+}
 }
 @media (max-width: 500px){
   #presentacion {
