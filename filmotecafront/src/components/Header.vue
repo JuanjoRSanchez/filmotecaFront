@@ -16,6 +16,7 @@
       </button>
     </div>
     <div v-if="email" id="usuario01">Hola! {{ name }}</div>
+    <div v-else id="usuario01">Hola!</div>
   </div>
 </template>
 <script>

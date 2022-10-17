@@ -99,7 +99,7 @@ export default {
             this.password
         )
         .then((response) => {
-          console.log(response.data);
+          //console.log(response.data);
           this.loginDTO = response.data;
           if (this.loginDTO.valor == 2) {
             localStorage.mail = this.email;

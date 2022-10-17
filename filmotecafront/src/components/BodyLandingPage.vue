@@ -84,17 +84,17 @@ hr {
 a:hover {
   color: rgb(158, 192, 207);
 }
-@media (min-width: 501) and (max-width: 950px){
-#BodyLandingPage {
-  height: 550px;
-}
-#presentacion {
-    font-size: 12px;
-}
-}
-@media (max-width: 500px){
+@media (min-width: 501) and (max-width: 950px) {
+  #BodyLandingPage {
+    height: 550px;
+  }
   #presentacion {
     font-size: 12px;
+  }
 }
+@media (max-width: 500px) {
+  #presentacion {
+    font-size: 12px;
+  }
 }
 </style>

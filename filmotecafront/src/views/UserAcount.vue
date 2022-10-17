@@ -72,10 +72,7 @@
       <input v-model="mensaje" id="inp" type="text" />
     </div>
     <div id="mensajeConfirmacion">
-      <input
-        v-model="mensajeConfirmacion"
-        type="text"
-      />
+      <input v-model="mensajeConfirmacion" type="text" />
       <div>
         <button
           class="btn btn-danger btn-block fa-lg mb-3"
@@ -176,7 +173,8 @@ export default {
             this.email = this.usuario.email;
 
             localStorage.mail = this.email;
-            localStorage.name = this.name;
+            localStorage.name = this.usuario.name;
+            console.log(localStorage.name);
             this.mensaje = "El usuario se actualizó con exito";
             document.getElementById("mensaje").style.display = "block";
             setTimeout(this.ocultarMensaje, 3000);
@@ -196,7 +194,7 @@ export default {
               setTimeout(function () {
                 router.push({ name: "LandingPage" });
               }, 2000);
-               //router.push({name: "LandingPage"});
+              //router.push({name: "LandingPage"});
             } else {
               this.mensaje =
                 "No ha sido posible eliminar tu cuenta en este momento";
@@ -338,7 +336,7 @@ section {
   border: none;
   text-align: center;
   color: white;
-  background-color:  rgb(201, 21, 21)
+  background-color: rgb(201, 21, 21);
 }
 .boxCampo {
   width: 100%;
@@ -369,7 +367,7 @@ section {
   #caja00 {
     width: 70%;
   }
-  .inputE{
+  .inputE {
     width: 90%;
   }
 }

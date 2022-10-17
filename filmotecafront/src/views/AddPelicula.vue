@@ -234,6 +234,7 @@ export default {
           nota: this.nota,
           vista: this.vista,
         };
+        console.log(this.peliculaDTO)
         axios
           .post(
             "http://localhost:9012/filmoteca/v1/pelicula/add",
